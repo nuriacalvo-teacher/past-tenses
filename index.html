@@ -1,0 +1,2710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Grammar Academy | Past Tenses · 7 modules · 3 levels</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #090d16 0%, #111827 50%, #14532d 100%); }
+    .neon-border { box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); }
+    .neon-border:hover { box-shadow: 0 0 25px rgba(52, 211, 153, 0.45); }
+
+    .gap-input {
+      background: #020617;
+      border: none;
+      border-bottom: 3px solid #475569;
+      color: #fff;
+      font-weight: 800;
+      text-align: center;
+      padding: 2px 10px;
+      margin: 0 4px 6px;
+      border-radius: 6px 6px 0 0;
+      outline: none;
+      transition: all .15s ease;
+      display: inline-block;
+      min-width: 7ch;
+      max-width: 100%;
+    }
+    .gap-input:focus { border-bottom-color: #34d399; background: #0b1220; }
+    .gap-input.wide { display: block; width: 100%; min-width: 0; text-align: left; border: 2px solid #334155; border-radius: 14px; padding: 12px 16px; margin: 0; }
+    .gap-input.wide:focus { border-color: #34d399; }
+    .gap-input.wide::placeholder { color: #475569; font-weight: 600; }
+    .mcq-opt:disabled { cursor: default; }
+    .mcq-ok { border-color: #10b981 !important; background: rgba(6,78,59,.55) !important; color: #6ee7b7 !important; }
+    .mcq-ko { border-color: #f43f5e !important; background: rgba(76,5,25,.55) !important; color: #fda4af !important; }
+    .gap-ok { border-bottom-color: #10b981 !important; color: #6ee7b7 !important; background: rgba(6,78,59,.45) !important; }
+    .gap-ko { border-bottom-color: #f43f5e !important; color: #fda4af !important; background: rgba(76,5,25,.45) !important; }
+
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .print-card { border: 2px solid #000 !important; background: #fff !important; color: #000 !important; }
+    }
+  </style>
+
+<!-- 1. Firebase libraries -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<script>
+  // 2. Firebase configuration (same project as the reference app)
+  window.firebaseConfig = {
+    apiKey: "AIzaSyD1kMkporqrJFZNfEakmzQjFngkmF4detQ",
+    authDomain: "goya-english.firebaseapp.com",
+    databaseURL: "https://goya-english-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "goya-english",
+    storageBucket: "goya-english.firebasestorage.app",
+    messagingSenderId: "707378371042",
+    appId: "1:707378371042:web:a85b3c8d179156cc7a41bb",
+    measurementId: "G-9L8SR3268E"
+  };
+
+  // 3. Safe initialisation
+  if (!firebase.apps.length) {
+    firebase.initializeApp(window.firebaseConfig);
+  }
+  const db = firebase.database();
+  const auth = firebase.auth();
+
+  // =====================================================================
+  //   C O N F I G U R A C I O N   ->   esto es lo unico que hay que tocar
+  // =====================================================================
+
+  // (1) TU NOMBRE y TU CUENTA DE GOOGLE. El boton gris "Teacher" abre el
+  //     panel solo si entras con esta cuenta: no hay contrasenas escritas
+  //     en este archivo, la identidad la comprueba Google y Firebase.
+  //     >>> PON AQUI TU CORREO DE GOOGLE, y el mismo en reglas-firebase.json
+  window.TEACHER_NAME  = "Nuria Calvo";
+  window.TEACHER_EMAIL = "nuria.calvo@iesgoya.es";
+
+  // (2) LOS CODIGOS DE CLASE YA NO ESTAN EN ESTE ARCHIVO.
+  //     Viven en las reglas de Firebase, que son privadas: asi nadie puede
+  //     leerlos mirando el codigo fuente de la pagina. Para cambiarlos o
+  //     anadir uno, se editan alli (reglas-firebase.json) y ya esta.
+
+  // (3) SOLO ENTRAN LAS CUENTAS DE ESTE DOMINIO. Deja "" para no filtrar.
+  //     Firebase lo comprueba tambien por su cuenta, no solo la pagina.
+  window.SCHOOL_DOMAIN = "iesgoya.es";
+
+  // (4) MODO INVITADO: quien no tenga codigo (o no sea de tus grupos) puede
+  //     hacer los ejercicios y ver su nota, pero NO se guarda nada.
+  window.ALLOW_GUEST_MODE = true;
+
+  //     Texto que veran los alumnos debajo de la casilla del codigo ("" = nada).
+  window.CODE_HINT = "";
+
+  // (5) AVANZADO: otros profesores que compartan esta base de datos.
+  //     Su correo hay que anadirlo tambien en reglas-firebase.json.
+  window.EXTRA_TEACHERS = [
+    // { teacher: "Marta", email: "marta@iesgoya.es" }
+  ];
+
+  // ---- a partir de aqui no hace falta tocar nada ----
+  // Nodo propio de esta app (no se mezcla con las demas apps).
+  const RESULTS_NODE = "past_tenses_v1";
+
+  window.TEACHERS = [{ teacher: window.TEACHER_NAME, email: window.TEACHER_EMAIL }]
+    .concat(window.EXTRA_TEACHERS || []);
+</script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen gradient-bg flex flex-col selection:bg-emerald-500 selection:text-white">
+
+<!-- FLOATING TEACHER BUTTON -->
+<button onclick="showTeacherLogin()" style="position: fixed; top: 15px; right: 15px; z-index: 99999; padding: 10px 16px; background-color: #059669; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" class="no-print">
+  ⚙️ Teacher
+</button>
+
+  <!-- NAVBAR -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-filter blur-md sticky top-0 z-50 py-4 no-print">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
+      <div class="flex items-center space-x-4 cursor-pointer" onclick="goHome()">
+        <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-emerald-600 flex items-center justify-center font-black text-2xl md:text-3xl text-white shadow-lg shadow-emerald-500/40">
+          E
+        </div>
+        <div>
+          <h1 class="font-black text-2xl md:text-3xl text-white tracking-wider">ENGLISH<span class="text-emerald-400">PRO</span></h1>
+          <p class="text-sm font-semibold text-slate-400">Past Tenses · 7 modules · 3 levels</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div id="userInfoHeader" class="hidden text-right text-sm md:text-base text-slate-300 bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-700"></div>
+
+        <button onclick="toggleFullScreen()" class="bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400 px-5 py-3 rounded-2xl font-black text-sm md:text-base transition flex items-center gap-2 shadow-lg shadow-emerald-600/30">
+          <i class="fa-solid fa-expand text-lg"></i> <span class="hidden md:inline">Full Screen</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-8 flex flex-col justify-center">
+
+    <!-- STUDENT REGISTRATION -->
+    <section id="viewRegistration" class="space-y-6 max-w-xl mx-auto w-full py-6">
+      <div class="text-center space-y-3">
+        <span class="px-4 py-1.5 bg-emerald-500/20 text-emerald-300 rounded-full text-xs md:text-sm font-extrabold uppercase tracking-widest border border-emerald-500/30">Student Portal</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white">Master the Past! 🇬🇧</h2>
+        <p class="text-slate-300 text-base md:text-xl"><strong>7 modules</strong> of past tenses, each one with <strong>3 levels</strong>: choose the right option, fill in the gaps and translate into English.</p>
+      </div>
+
+      <form id="regForm" onsubmit="handleRegistration(event)" class="bg-slate-900/95 border-2 border-slate-800 p-6 md:p-10 rounded-3xl shadow-2xl space-y-5">
+        <div id="authGate" class="space-y-4">
+          <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 text-left space-y-2">
+            <p class="text-base md:text-lg text-slate-200 font-bold"><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Sign in and your work follows you</p>
+            <p class="text-sm md:text-base text-slate-400 leading-snug">Your marks are saved in <strong>your own account</strong>, so you can carry on from any computer, tablet or phone. Nobody else can see them.</p>
+          </div>
+          <button type="button" onclick="signInWithGoogle()" class="w-full bg-white hover:bg-slate-100 text-slate-800 font-black text-lg md:text-xl py-4 rounded-2xl transition flex items-center justify-center gap-3 shadow-lg">
+            <i class="fa-brands fa-google text-xl"></i> Sign in with Google
+          </button>
+          <p id="authError" class="hidden text-sm font-bold text-rose-400"></p>
+        </div>
+
+        <div id="regFields" class="hidden space-y-5">
+        <div>
+          <label class="block text-sm font-bold text-slate-300 uppercase tracking-wider mb-2">First name</label>
+          <input type="text" id="regFirstName" required placeholder="e.g. Alex" class="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl px-5 py-4 text-lg md:text-xl text-white focus:outline-none focus:border-emerald-500 transition">
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-300 uppercase tracking-wider mb-2">Surname(s)</label>
+          <input type="text" id="regLastName" required placeholder="e.g. García López" class="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl px-5 py-4 text-lg md:text-xl text-white focus:outline-none focus:border-emerald-500 transition">
+        </div>
+        <div id="accountBox">
+          <label class="block text-sm font-bold text-slate-300 uppercase tracking-wider mb-2">Your account</label>
+          <div class="w-full bg-slate-950 border-2 border-emerald-500/30 rounded-2xl px-5 py-4 flex items-center justify-between gap-3">
+            <span id="regEmailShown" class="text-base md:text-lg text-emerald-300 font-bold break-all"></span>
+            <button type="button" onclick="signOutNow()" class="text-xs text-slate-400 hover:text-white underline whitespace-nowrap">Not you?</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-300 uppercase tracking-wider mb-2">Group / Grupo</label>
+          <select id="regGrade" required class="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl px-5 py-4 text-lg md:text-xl text-white focus:outline-none focus:border-emerald-500 transition">
+            <option value="" disabled selected>Select your group...</option>
+            <option value="1ESO">1ESO</option>
+            <option value="2ESO">2ESO</option>
+            <option value="3ESO">3ESO</option>
+            <option value="4ESO">4ESO</option>
+            <option value="1BTO">1BTO</option>
+            <option value="2BTO">2BTO</option>
+          </select>
+        </div>
+        <div id="codeBox">
+          <label class="block text-sm font-bold text-amber-400 uppercase tracking-wider mb-2">Class code</label>
+          <input type="text" id="regClassCode" required placeholder="e.g. ABC123" autocomplete="off" autocapitalize="characters"
+            class="w-full bg-slate-950 border-2 border-amber-500/40 rounded-2xl px-5 py-4 text-lg md:text-xl text-white font-black tracking-widest uppercase focus:outline-none focus:border-amber-400 transition">
+          <p class="text-xs md:text-sm text-slate-400 mt-2 leading-snug">
+            Your own teacher gives you this code. Your work is sent <strong>only</strong> to that teacher.
+          </p>
+          <p id="regCodeHint" class="hidden text-sm font-bold text-amber-300 mt-2"></p>
+        </div>
+        <div id="guestNotice" class="hidden bg-slate-800/60 border border-slate-700 rounded-2xl p-4 text-left">
+          <p class="text-base font-black text-slate-200"><i class="fa-solid fa-user-clock text-slate-400 mr-1"></i> Guest mode</p>
+          <p class="text-sm text-slate-400 leading-snug mt-1">You can do every exercise and see your marks on screen, but <strong>nothing is saved</strong>: if you close the page, your progress is lost and your teacher does not get it.</p>
+          <button type="button" onclick="cancelGuestForm()" class="text-sm text-emerald-300 hover:text-white underline mt-2">I do have a code \u2192 sign in with Google</button>
+        </div>
+        <p id="regCodeError" class="hidden text-sm font-bold text-rose-400"></p>
+        <button type="submit" id="regSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl md:text-2xl py-5 rounded-2xl transition shadow-xl shadow-emerald-600/40 flex items-center justify-center gap-3 mt-4">
+          Enter the Academy <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        </div>
+
+        <div id="guestBox" class="hidden pt-2 text-center border-t border-slate-800 mt-2">
+          <p class="text-sm text-slate-400 mt-4 mb-3">Don’t have a code? You can still practise: your marks appear on screen and you can print them, but <strong>nothing is sent to any teacher</strong>.</p>
+          <p class="text-xs text-slate-500 mb-3 leading-snug"><i class="fa-solid fa-circle-info"></i> <strong>Other teachers:</strong> your students are welcome to use this app in guest mode. They get every exercise and their own report on screen — it just isn’t stored, so nothing reaches another teacher’s marks list.</p>
+          <button type="button" onclick="startGuestForm()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-black text-base md:text-lg py-4 rounded-2xl transition flex items-center justify-center gap-3">
+            <i class="fa-solid fa-user-clock"></i> Practise without a code
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- MAIN DASHBOARD -->
+    <section id="viewDashboard" class="hidden space-y-8 py-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-slate-900/90 border-2 border-slate-800 p-6 md:p-8 rounded-3xl">
+        <div>
+          <h2 class="text-3xl md:text-5xl font-black text-white" id="welcomeUserText">Hi!</h2>
+          <p class="text-slate-300 text-lg md:text-xl mt-1">Work through each module from <strong>level 1</strong> to <strong>level 3</strong>. Pass every level and send a <strong>screenshot</strong> of your result to your teacher.</p>
+        </div>
+        <button onclick="showGlobalReportModal()" class="w-full md:w-auto bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg md:text-xl px-8 py-5 rounded-2xl transition flex items-center justify-center gap-3 shadow-xl shadow-amber-500/30">
+          <i class="fa-solid fa-graduation-cap text-2xl"></i> FINAL REPORT
+        </button>
+      </div>
+
+      <div class="space-y-12" id="modulesGrid"></div>
+    </section>
+
+    <!-- THEORY GUIDE -->
+    <section id="viewLesson" class="hidden space-y-6 py-4">
+      <div class="flex justify-between items-center no-print">
+        <button onclick="goHome()" class="text-base md:text-lg font-bold text-slate-400 hover:text-white flex items-center gap-2">
+          <i class="fa-solid fa-chevron-left"></i> Back to dashboard
+        </button>
+        <span class="text-base font-black text-emerald-400 uppercase tracking-widest" id="lessonTopicCategory">Grammar Guide</span>
+      </div>
+
+      <div class="bg-slate-900/95 border-2 border-slate-800 rounded-3xl p-6 md:p-10 space-y-8 text-slate-100 text-xl md:text-2xl leading-relaxed shadow-2xl" id="lessonContent"></div>
+
+      <!-- HOW TO ANSWER -->
+      <div class="bg-emerald-950/40 border-2 border-emerald-500/40 rounded-3xl p-6 md:p-8 space-y-3">
+        <h3 class="text-emerald-300 font-black text-xl md:text-2xl flex items-center gap-3"><i class="fa-solid fa-pen-to-square"></i> How to answer</h3>
+        <ul id="howToList" class="text-base md:text-xl text-slate-200 space-y-2 list-disc list-inside"></ul>
+      </div>
+
+      <div class="flex justify-end no-print">
+        <button id="startQuizBtn" onclick="startCurrentQuiz()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl md:text-2xl px-10 py-5 rounded-2xl transition shadow-xl shadow-emerald-600/40 flex items-center justify-center gap-3">
+          Start <i class="fa-solid fa-play"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- LIVE EXERCISES -->
+    <section id="viewQuiz" class="hidden space-y-6 py-2">
+      <div class="flex justify-between items-center bg-slate-900 border-2 border-slate-800 p-5 md:p-6 rounded-2xl">
+        <div>
+          <span class="text-sm md:text-base text-emerald-400 font-extrabold uppercase tracking-wider" id="quizCategoryTitle">Exercises</span>
+          <h3 class="text-2xl md:text-4xl font-black text-white" id="quizQuestionCount">Question 1 of 50</h3>
+        </div>
+        <div class="text-right">
+          <span class="text-sm md:text-base text-slate-400 font-bold">Time</span>
+          <div id="quizTimer" class="font-mono font-black text-3xl md:text-5xl text-emerald-400">00:00</div>
+        </div>
+      </div>
+
+      <div class="w-full bg-slate-800 rounded-full h-4 overflow-hidden">
+        <div id="quizProgressBar" class="bg-emerald-500 h-4 rounded-full transition-all duration-300" style="width: 10%;"></div>
+      </div>
+
+      <div class="bg-slate-900/90 border-2 border-slate-800 p-6 md:p-10 rounded-3xl space-y-6 shadow-2xl">
+        <div id="quizTypeBadge"></div>
+        <p class="text-2xl md:text-4xl font-extrabold text-white leading-relaxed" id="quizSentence">Loading...</p>
+        <div id="verbFormsHint" class="hidden"></div>
+        <div id="quizFeedback" class="hidden p-6 md:p-8 rounded-2xl text-lg md:text-2xl font-bold border-2"></div>
+        <div class="flex justify-end no-print">
+          <button id="checkAnswerBtn" onclick="checkExercise()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl md:text-2xl px-8 py-4 rounded-2xl transition shadow-lg shadow-emerald-600/30">
+            <i class="fa-solid fa-check mr-2"></i> Check
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center pt-2 no-print">
+        <button onclick="quitQuiz()" class="text-base md:text-lg font-bold text-slate-400 hover:text-slate-200">Quit the test</button>
+        <button id="nextQuestionBtn" onclick="nextQuestion()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl md:text-2xl px-8 py-4 rounded-2xl transition shadow-lg shadow-emerald-600/30">
+          Next Sentence <i class="fa-solid fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- PARTIAL RESULT -->
+    <section id="viewResults" class="hidden space-y-6 py-6 max-w-3xl mx-auto w-full">
+      <div id="resultsCard" class="bg-slate-900 border-2 border-slate-800 p-8 md:p-10 rounded-3xl text-center space-y-6 shadow-2xl"></div>
+      <div id="reviewCard" class="bg-slate-900 border-2 border-slate-800 p-6 md:p-8 rounded-3xl space-y-3 shadow-2xl"></div>
+    </section>
+
+    <!-- FINAL GLOBAL REPORT -->
+    <section id="viewGlobalReport" class="hidden py-4 max-w-3xl mx-auto w-full">
+      <div id="screenCaptureArea" class="bg-slate-900 border-4 border-emerald-500/50 p-6 md:p-8 rounded-3xl space-y-5 shadow-2xl relative overflow-hidden print-card">
+        <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none text-9xl font-black text-white select-none">
+          ENGLISHPRO
+        </div>
+
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-xs font-black text-amber-400 uppercase tracking-widest">Official • Past Tenses · 7 modules · 3 levels</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-black text-white mt-1">Final Assessment Report</h2>
+          </div>
+          <button onclick="goHome()" class="no-print text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl">
+            <i class="fa-solid fa-xmark"></i> Close
+          </button>
+        </div>
+
+        <div id="globalReportDetails" class="space-y-5"></div>
+      </div>
+    </section>
+
+    <!-- TEACHER PANEL -->
+    <section id="viewTeacher" class="hidden space-y-6 py-6">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-black text-white" id="teacherTitle">Teacher Dashboard</h2>
+          <p id="teacherSubtitle" class="text-base text-slate-400">One row per student · click a student to see every attempt and every answer they wrote.</p>
+        </div>
+        <button onclick="goHome()" class="text-sm md:text-base bg-slate-800 text-slate-300 font-bold px-5 py-3 rounded-xl">Exit</button>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="teacherStatsGrid"></div>
+
+      <div class="flex flex-col md:flex-row gap-3 md:items-center">
+        <input id="teacherSearchInput" type="text" placeholder="🔍 Search student by name, surname, group or email..." oninput="filterTeacherTable(this.value)"
+          class="flex-1 bg-slate-900 border-2 border-slate-800 rounded-2xl px-5 py-3 text-base text-white focus:outline-none focus:border-emerald-500 transition">
+        <button id="teacherRefreshBtn" onclick="refreshTeacherDashboardNow()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-5 py-3 rounded-2xl transition flex items-center justify-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-arrows-rotate"></i> Refresh
+        </button>
+        <button onclick="exportTeacherCsv()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-5 py-3 rounded-2xl transition flex items-center justify-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-file-csv"></i> Export CSV
+        </button>
+      </div>
+      <p id="teacherLastRefreshed" class="text-xs text-slate-500 -mt-2">Loading...</p>
+
+      <div class="bg-slate-900 border-2 border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm md:text-base text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 uppercase font-bold text-xs" id="teacherTableHead"></thead>
+            <tbody id="teacherTableBody" class="divide-y divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-4 text-center text-sm text-slate-500 font-semibold no-print">
+    EnglishPRO Academy • Past Tenses · 7 modules · 3 levels • Designed for ESO &amp; Bachillerato
+  </footer>
+  <script>
+    /* ============================================================
+       CONTENIDO · 7 módulos × 3 niveles
+       Cada módulo trae: teoría, 10 de opción múltiple, 10 de huecos
+       y 10 de traducción.
+       En las traducciones, [a|b|c] dentro de una respuesta significa
+       "vale cualquiera de estas opciones" y [a|] que la palabra es
+       opcional: el corrector genera todas las combinaciones.
+       ============================================================ */
+    const MODULE_DEFS = [
+      {
+        id: "ps", title: "1 · Simple Past", short: "Simple Past", icon: "fa-calendar-check",
+        desc: "Acciones terminadas en un momento concreto del pasado.",
+        theory: `
+          <h2 class="text-3xl md:text-4xl font-black text-indigo-400 mb-3">1 · Simple Past</h2>
+          <p class="text-slate-200 text-lg md:text-2xl mb-6 leading-relaxed">Acciones <strong>empezadas y terminadas</strong> en el pasado. Sabemos (o se sobreentiende) <strong>cuándo</strong> pasaron: <em>yesterday, last week, in 2015, two days ago</em>. Equivale al pretérito indefinido (<em>fui, comí</em>) y muchas veces al imperfecto (<em>iba, comía</em>) del español.</p>
+          <div class="space-y-5">
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-amber-400 font-black text-xl md:text-2xl mb-3">📌 Cuándo se usa</h3>
+              <ul class="space-y-3 text-base md:text-xl text-slate-300">
+                <li><strong class="text-indigo-300">Acción terminada en un momento concreto:</strong><br>I <u>visited</u> Rome in 2019. · We <u>watched</u> a film last night.</li>
+                <li><strong class="text-indigo-300">Acciones seguidas, una detrás de otra (para contar historias):</strong><br>She <u>got up</u>, <u>had</u> a shower and <u>left</u> the house.</li>
+                <li><strong class="text-indigo-300">Hábitos del pasado</strong> (también con <em>used to</em>):<br>When I was a child, I <u>played</u> in the street every afternoon. = I <u>used to play</u>…</li>
+                <li><strong class="text-indigo-300">Estados y situaciones del pasado:</strong><br>My grandfather <u>was</u> very shy. · They <u>had</u> a big dog.</li>
+                <li><strong class="text-indigo-300">Duración ya terminada</strong> (ya no es así):<br>I <u>lived</u> in London for two years. (ahora ya no vivo allí)</li>
+                <li><strong class="text-indigo-300">Personas que ya no viven u obras cerradas:</strong><br>Cervantes <u>wrote</u> <em>Don Quixote</em>.</li>
+              </ul>
+            </div>
+            <div class="bg-emerald-950/40 p-5 md:p-7 rounded-3xl border-2 border-emerald-500/50">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">⚙️ La forma</h3>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Afirmativa:</strong> la misma forma para <strong>todas</strong> las personas → I / she / they <strong>worked</strong> · <strong>went</strong> (irregular)</p>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Negativa:</strong> <strong>didn't</strong> + infinitivo → She <strong>didn't go</strong>. <span class="text-amber-300">(NO <s>didn't went</s>)</span></p>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Interrogativa:</strong> <strong>Did</strong> + sujeto + infinitivo → <strong>Did</strong> you <strong>see</strong> it? <span class="text-amber-300">(NO <s>Did you saw</s>)</span></p>
+              <p class="text-base md:text-xl text-slate-200"><strong>Verbo BE:</strong> I / he / she / it <strong>was</strong> · you / we / they <strong>were</strong> · wasn't / weren't · <strong>Was</strong> she…? <strong>Were</strong> they…? <span class="text-amber-300">(sin <em>did</em>)</span></p>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-sky-300 font-black text-xl md:text-2xl mb-3">✍️ Ortografía del -ed (verbos regulares)</h3>
+              <p class="text-base md:text-xl text-slate-300">work → work<strong>ed</strong> · live → liv<strong>ed</strong> (solo -d) · stop → stop<strong>ped</strong> (dobla) · study → stud<strong>ied</strong> (consonante + y) · play → play<strong>ed</strong> (vocal + y) · travel → travel<strong>led</strong> (británico) / travel<strong>ed</strong> (americano)</p>
+            </div>
+            <div class="bg-violet-950/30 p-5 md:p-7 rounded-3xl border-2 border-violet-500/40">
+              <h3 class="text-violet-300 font-black text-xl md:text-2xl mb-3">📚 Irregulares que más caen</h3>
+              <p class="text-base md:text-xl text-slate-300">be → was/were · go → went · have → had · do → did · make → made · see → saw · buy → bought · eat → ate · take → took · get → got · come → came · write → wrote · leave → left · find → found · think → thought · lose → lost · break → broke · swim → swam</p>
+            </div>
+            <div class="bg-amber-950/30 p-5 md:p-7 rounded-3xl border-2 border-amber-500/40">
+              <h3 class="text-amber-300 font-black text-xl md:text-2xl mb-3">⏰ Palabras que lo acompañan</h3>
+              <p class="text-base md:text-xl text-slate-300">yesterday, last night / week / year, two days <strong>ago</strong>, in 2015, when I was a child, then, after that, the day before yesterday.</p>
+              <p class="text-base md:text-lg text-slate-400 mt-2">Las preguntas con <strong>When…?</strong> y <strong>What time…?</strong> sobre el pasado van casi siempre en past simple: <em>When did you arrive?</em></p>
+            </div>
+          </div>`,
+        mcq: [
+          { q: "We _____ to the beach last summer.", options: ["went", "go", "have gone", "goed"], x: "'Last summer' es tiempo terminado → past simple. Go es irregular: went." },
+          { q: "_____ you see the match yesterday?", options: ["Did", "Do", "Were", "Have"], x: "Pregunta en past simple: Did + sujeto + infinitivo (see)." },
+          { q: "She _____ the answer, so she asked the teacher.", options: ["didn't know", "didn't knew", "doesn't know", "wasn't know"], x: "Negativa: didn't + infinitivo. Nunca 'didn't knew'." },
+          { q: "My grandfather _____ in a factory for thirty years. He retired in 2010.", options: ["worked", "has worked", "works", "was work"], x: "Ya no trabaja allí (se jubiló) → duración terminada → past simple." },
+          { q: "The children _____ very tired after the trip.", options: ["were", "was", "did", "been"], x: "Verbo BE con sujeto plural → were." },
+          { q: "I _____ my keys two days ago.", options: ["lost", "have lost", "lose", "losed"], x: "'Ago' siempre va con past simple. Lose es irregular: lost." },
+          { q: "Where _____ you born?", options: ["were", "was", "did", "are"], x: "Se dice 'be born' → Where were you born? (sin did)." },
+          { q: "When he was younger, he _____ his bike to school every day.", options: ["rode", "ridden", "rided", "rides"], x: "Hábito pasado → past simple. Ride → rode (ridden es el participio)." },
+          { q: "They _____ the train because they got up late.", options: ["missed", "miss", "have missed", "mised"], x: "Acción terminada y conectada con otra en pasado (got up) → past simple." },
+          { q: "What time _____ the film start last night?", options: ["did", "was", "does", "had"], x: "'Last night' + pregunta con verbo normal (start) → did." }
+        ],
+        gaps: [
+          { text: "Last Saturday we ___ a new pair of trainers.", hint: "buy", answers: ["bought"], x: "Buy es irregular: bought." },
+          { text: "I ___ my homework last night.", hint: "not / do", answers: ["didn't do", "did not do"], x: "Negativa: didn't + infinitivo (do), nunca 'didn't did'." },
+          { text: "___ you ___ the Prado Museum when you were in Madrid?", hint: "visit", answers: [["did", "Did"], ["visit"]], x: "Pregunta: Did + sujeto + infinitivo (visit, sin -ed)." },
+          { text: "Cervantes ___ Don Quixote.", hint: "write", answers: ["wrote"], x: "Autor que ya no vive, obra cerrada → past simple. Write → wrote." },
+          { text: "The weather ___ terrible on our holiday.", hint: "be", answers: ["was"], x: "BE con 'the weather' (singular) → was." },
+          { text: "My parents ___ married in 2005.", hint: "get", answers: ["got"], x: "Año concreto (in 2005) → past simple. Get → got." },
+          { text: "She ___ the bus, so she walked home.", hint: "not / catch", answers: ["didn't catch", "did not catch"], x: "Negativa: didn't + catch." },
+          { text: "We ___ in the river every day when we were kids.", hint: "swim", answers: ["swam", "used to swim", "would swim"], x: "Hábito pasado: swam (también vale 'used to swim')." },
+          { text: "Why ___ you ___ the party so early yesterday?", hint: "leave", answers: [["did"], ["leave"]], x: "Pregunta con Why: Why + did + sujeto + infinitivo." },
+          { text: "Columbus ___ to America in 1492.", hint: "sail", answers: ["sailed"], x: "Verbo regular: sail → sailed. Fecha concreta → past simple." }
+        ],
+        tr: [
+          { es: "Ayer fui al cine con mis amigos.", verb: "(go)", en: "Yesterday I went to the cinema with my friends.",
+            alts: ["I went to the [cinema|movies|pictures] with my friends yesterday."], x: "'Ayer' → past simple. Go → went." },
+          { es: "No vimos a Pedro en la fiesta.", verb: "(see)", en: "We didn't see Pedro at the party.",
+            alts: ["We did not see Pedro at the party."], x: "Negativa: didn't + infinitivo (see)." },
+          { es: "¿Dónde compraste esa chaqueta?", verb: "(buy)", en: "Where did you buy that jacket?",
+            alts: [], x: "Pregunta: Where + did + sujeto + infinitivo (buy, no bought)." },
+          { es: "Mi abuela nació en 1950.", verb: "(be born)", en: "My grandmother was born in 1950.",
+            alts: [], x: "'Nacer' = be born → was born." },
+          { es: "Hace dos años vivíamos en Huesca.", verb: "(live)", en: "Two years ago we lived in Huesca.",
+            alts: ["We lived in Huesca two years ago.", "Two years ago we were living in Huesca.", "We used to live in Huesca two years ago."], x: "'Hace dos años' = two years ago → past simple." },
+          { es: "El examen fue muy difícil.", verb: "(be)", en: "The exam was very difficult.",
+            alts: ["The exam was [very|really] [difficult|hard]."], x: "BE en pasado, singular → was." },
+          { es: "Cuando era pequeño, jugaba al fútbol todos los días.", verb: "(play)", en: "When I was little, I played football every day.",
+            alts: ["When I was [little|small|a child|a kid|young|a little boy|a boy], I [played|used to play|would play] football every day."], x: "Hábito del pasado → past simple o 'used to'." },
+          { es: "¿Llamaste a tu madre anoche?", verb: "(call)", en: "Did you call your mother last night?",
+            alts: ["Did you [call|phone|ring] your mother last night?"], x: "Pregunta: Did + sujeto + infinitivo. 'Anoche' = last night." },
+          { es: "Perdieron el autobús y llegaron tarde a clase.", verb: "(miss / arrive)", en: "They missed the bus and arrived late for class.",
+            alts: ["They missed the bus and [arrived|were|got|came] late [for class|to class|for school|to school|for their class]."], x: "Dos acciones seguidas → past simple las dos." },
+          { es: "No hizo los deberes.", verb: "(do)", en: "He didn't do his homework.",
+            alts: ["[He|She] [didn't|did not] do [his|her|the] homework."], x: "Sin sujeto en español: vale he o she. Didn't + do." }
+        ]
+      },
+      {
+        id: "pc", title: "2 · Past Continuous", short: "Past Cont.", icon: "fa-film",
+        desc: "Lo que estaba pasando en un momento del pasado.",
+        theory: `
+          <h2 class="text-3xl md:text-4xl font-black text-sky-400 mb-3">2 · Past Continuous</h2>
+          <p class="text-slate-200 text-lg md:text-2xl mb-6 leading-relaxed">Acciones <strong>en marcha</strong> en un momento del pasado: es como una foto o un vídeo pausado. Equivale a <strong>«estaba + gerundio»</strong> (<em>estaba comiendo</em>) y muchas veces al imperfecto (<em>comía</em>).</p>
+          <div class="space-y-5">
+            <div class="bg-emerald-950/40 p-5 md:p-7 rounded-3xl border-2 border-emerald-500/50">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">⚙️ La forma</h3>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Afirmativa:</strong> I / he / she / it <strong>was</strong> + verbo-<strong>ing</strong> · you / we / they <strong>were</strong> + verbo-<strong>ing</strong></p>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Negativa:</strong> I <strong>wasn't</strong> working · They <strong>weren't</strong> working</p>
+              <p class="text-base md:text-xl text-slate-200"><strong>Interrogativa:</strong> <strong>Was</strong> she working? · What <strong>were</strong> you doing?</p>
+              <p class="text-base md:text-lg text-amber-300 mt-3">⚠️ El <strong>was / were</strong> es obligatorio: <s>I working</s> → I <strong>was</strong> working.</p>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-amber-400 font-black text-xl md:text-2xl mb-3">📌 Cuándo se usa</h3>
+              <ul class="space-y-3 text-base md:text-xl text-slate-300">
+                <li><strong class="text-sky-300">Acción en progreso en un momento concreto del pasado:</strong><br>At eight o'clock last night I <u>was having</u> dinner.</li>
+                <li><strong class="text-sky-300">Acción larga interrumpida por otra corta</strong> (esta en past simple):<br>I <u>was reading</u> when the phone <u>rang</u>.</li>
+                <li><strong class="text-sky-300">Dos acciones largas a la vez</strong> (con <em>while</em>):<br>While I <u>was cooking</u>, my brother <u>was watching</u> TV.</li>
+                <li><strong class="text-sky-300">Describir el escenario de una historia:</strong><br>The sun <u>was shining</u> and the birds <u>were singing</u>.</li>
+                <li><strong class="text-sky-300">Acción que duró un periodo (se destaca la duración):</strong><br>It <u>was raining</u> all day yesterday.</li>
+                <li><strong class="text-sky-300">Quejas con "always":</strong><br>My brother <u>was always taking</u> my things!</li>
+              </ul>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-sky-300 font-black text-xl md:text-2xl mb-3">✍️ Ortografía del -ing</h3>
+              <p class="text-base md:text-xl text-slate-300">write → writ<strong>ing</strong> (cae la -e) · swim → swim<strong>ming</strong> (dobla) · lie → l<strong>ying</strong> · study → study<strong>ing</strong> · travel → travel<strong>ling</strong> (británico) / travel<strong>ing</strong> (americano)</p>
+            </div>
+            <div class="bg-rose-950/30 p-5 md:p-7 rounded-3xl border-2 border-rose-500/40">
+              <h3 class="text-rose-300 font-black text-xl md:text-2xl mb-3">🚫 Verbos de estado: NO van en continuo</h3>
+              <p class="text-base md:text-xl text-slate-300">know, like, love, hate, want, need, understand, believe, remember, belong, seem.</p>
+              <p class="text-base md:text-lg text-slate-400 mt-2"><s>I was knowing the answer</s> → I <strong>knew</strong> the answer. Pero: <em>We were having lunch</em> ✓ (have = comer, es una acción).</p>
+            </div>
+            <div class="bg-amber-950/30 p-5 md:p-7 rounded-3xl border-2 border-amber-500/40">
+              <h3 class="text-amber-300 font-black text-xl md:text-2xl mb-3">⏰ Palabras que lo acompañan</h3>
+              <p class="text-base md:text-xl text-slate-300">at five o'clock yesterday, at that moment, at this time last week, all day / all night, <strong>while</strong>, <strong>as</strong>, when.</p>
+            </div>
+          </div>`,
+        mcq: [
+          { q: "At eight o'clock last night I _____ dinner.", options: ["was having", "were having", "am having", "have"], x: "Acción en progreso en una hora concreta del pasado → was + -ing." },
+          { q: "They _____ football when it started to rain.", options: ["were playing", "was playing", "are playing", "play"], x: "Acción larga interrumpida por otra corta → past continuous. Sujeto plural → were." },
+          { q: "_____ you sleeping when I called you?", options: ["Were", "Was", "Did", "Are"], x: "Pregunta en past continuous con 'you' → Were." },
+          { q: "While my mother _____, my father was washing the dishes.", options: ["was cooking", "were cooking", "is cooking", "cooking"], x: "Dos acciones largas a la vez → was + -ing. Sin was, la frase no tiene verbo." },
+          { q: "She _____ attention, so she didn't hear the question.", options: ["wasn't paying", "didn't paying", "weren't paying", "not was paying"], x: "Negativa: wasn't + -ing (sujeto she)." },
+          { q: "What _____ at this time yesterday?", options: ["were you doing", "did you doing", "you were doing", "was you doing"], x: "Pregunta: Wh- + were + sujeto + -ing." },
+          { q: "I _____ the answer, so I put up my hand.", options: ["knew", "was knowing", "were knowing", "knowed"], x: "'Know' es verbo de estado: nunca en continuo. Know → knew." },
+          { q: "The sun _____ and the birds were singing.", options: ["was shining", "were shining", "is shining", "shines"], x: "Descripción del escenario → past continuous. 'The sun' es singular → was." },
+          { q: "It _____ all day yesterday, so we stayed at home.", options: ["was raining", "were raining", "is raining", "rains"], x: "Acción que duró todo el día → past continuous (it → was)." },
+          { q: "My brother _____ always _____ my things when we were young. It was so annoying!", options: ["was / taking", "were / taking", "did / take", "is / took"], x: "Queja con 'always' en pasado → was always + -ing." }
+        ],
+        gaps: [
+          { text: "At 10 p.m. yesterday I ___ TV.", hint: "watch", answers: ["was watching"], x: "Hora concreta del pasado → was watching." },
+          { text: "We ___ for the bus when we saw the accident.", hint: "wait", answers: ["were waiting"], x: "Acción larga interrumpida → were + waiting." },
+          { text: "Luckily, it ___ when we went out.", hint: "not / rain", answers: ["wasn't raining", "was not raining"], x: "Negativa: wasn't + -ing." },
+          { text: "___ they ___ in the garden when you arrived?", hint: "play", answers: [["were", "Were"], ["playing"]], x: "Pregunta: Were + sujeto + -ing." },
+          { text: "While I ___ a shower, the lights went out.", hint: "have", answers: ["was having"], x: "'While' + acción larga → was having." },
+          { text: "The students ___ loudly, so the teacher got angry.", hint: "talk", answers: ["were talking"], x: "Sujeto plural → were talking." },
+          { text: "What ___ you ___ at 7 o'clock this morning?", hint: "do", answers: [["were"], ["doing"]], x: "Wh- + were + sujeto + -ing." },
+          { text: "I ___ to music, so I didn't hear the doorbell.", hint: "listen", answers: ["was listening"], x: "Acción en progreso que explica lo demás → was listening." },
+          { text: "This time last year we ___ around Italy.", hint: "travel", answers: ["were travelling", "were traveling"], x: "'This time last year' → past continuous. Valen las dos grafías." },
+          { text: "He ___ attention during the lesson.", hint: "not / pay", answers: ["wasn't paying", "was not paying"], x: "Negativa en continuo: wasn't + paying." }
+        ],
+        tr: [
+          { es: "A las nueve de la noche estaba estudiando.", verb: "(study)", en: "At nine o'clock at night I was studying.",
+            alts: ["At nine [at night|in the evening|pm|o'clock in the evening] I was studying.", "At nine pm I was studying."], x: "Hora concreta del pasado → was + -ing." },
+          { es: "Estaba lloviendo cuando salimos de casa.", verb: "(rain / leave)", en: "It was raining when we left home.",
+            alts: ["It was raining when we [left home|left the house|left our house|went out]."], x: "Lo largo (llover) en continuo; lo corto (salir) en past simple." },
+          { es: "¿Qué estabas haciendo ayer a las cinco?", verb: "(do)", en: "What were you doing at five yesterday?",
+            alts: ["What were you doing yesterday at five [o'clock|pm|in the afternoon|]?"], x: "Wh- + were + you + -ing." },
+          { es: "Mientras yo cocinaba, mi hermano veía la tele.", verb: "(cook / watch)", en: "While I was cooking, my brother was watching TV.",
+            alts: ["[While|As] I was cooking, my brother was watching [TV|television|the TV].", "While I cooked, my brother watched TV."], x: "Dos acciones largas a la vez → while + past continuous." },
+          { es: "No estaban escuchando al profesor.", verb: "(listen)", en: "They weren't listening to the teacher.",
+            alts: ["They were not listening to the teacher."], x: "Negativa: weren't + -ing. Listen TO somebody." },
+          { es: "¿Estabas durmiendo cuando te llamé?", verb: "(sleep / call)", en: "Were you sleeping when I called you?",
+            alts: ["Were you [sleeping|asleep] when I [called|phoned|rang] [you|]?"], x: "Acción larga (dormir) interrumpida por una corta (llamar)." },
+          { es: "Hacía sol y los niños jugaban en el parque.", verb: "(shine / play)", en: "The sun was shining and the children were playing in the park.",
+            alts: ["[The sun was shining|It was sunny] and the children [were playing|played] in the park."], x: "Descripción del escenario → past continuous." },
+          { es: "Ayer por la tarde estuve trabajando en el jardín.", verb: "(work)", en: "Yesterday afternoon I was working in the garden.",
+            alts: ["I [was working|worked] in the garden yesterday [afternoon|evening]."], x: "Actividad que duró un rato → was working (también vale worked)." },
+          { es: "Mi hermana no llevaba abrigo.", verb: "(wear)", en: "My sister wasn't wearing a coat.",
+            alts: ["My sister was not wearing a coat.", "My sister didn't have a coat on.", "My sister [didn't wear|did not wear] a coat."], x: "Descripción en un momento del pasado → wasn't wearing." },
+          { es: "¿Por qué te estabas riendo?", verb: "(laugh)", en: "Why were you laughing?",
+            alts: [], x: "Why + were + you + -ing." }
+        ]
+      },
+      {
+        id: "pp", title: "3 · Past Perfect", short: "Past Perfect", icon: "fa-backward",
+        desc: "El pasado del pasado: lo que ya había ocurrido.",
+        theory: `
+          <h2 class="text-3xl md:text-4xl font-black text-violet-400 mb-3">3 · Past Perfect</h2>
+          <p class="text-slate-200 text-lg md:text-2xl mb-6 leading-relaxed">Es <strong>«el pasado del pasado»</strong>: una acción que ocurrió <strong>antes</strong> de otro momento o de otra acción que ya están en pasado. Equivale a <strong>«había + participio»</strong> (<em>había comido, se había ido</em>).</p>
+          <div class="space-y-5">
+            <div class="bg-emerald-950/40 p-5 md:p-7 rounded-3xl border-2 border-emerald-500/50">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">⚙️ La forma</h3>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Afirmativa:</strong> <strong>had</strong> + participio (3ª columna) para <strong>todas</strong> las personas → I / she / they <strong>had finished</strong> · <strong>had gone</strong></p>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Negativa:</strong> <strong>hadn't</strong> + participio → We <strong>hadn't eaten</strong>.</p>
+              <p class="text-base md:text-xl text-slate-200 mb-2"><strong>Interrogativa:</strong> <strong>Had</strong> + sujeto + participio → <strong>Had</strong> you <strong>seen</strong> it before?</p>
+              <p class="text-base md:text-xl text-slate-200"><strong>Contracción:</strong> I'd / she'd / they'd = I <strong>had</strong>…</p>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-amber-400 font-black text-xl md:text-2xl mb-3">📌 Cuándo se usa</h3>
+              <ul class="space-y-3 text-base md:text-xl text-slate-300">
+                <li><strong class="text-violet-300">1. Acción anterior a otra acción pasada:</strong><br>When I arrived, the film <u>had</u> already <u>started</u>. (primero empezó la peli, después llegué yo)</li>
+                <li><strong class="text-violet-300">2. Explicar la causa de una situación pasada:</strong><br>She was sad because she <u>had lost</u> her dog.</li>
+                <li><strong class="text-violet-300">3. Experiencia hasta un momento del pasado:</strong><br>I <u>had</u> never <u>seen</u> snow before I went to Canada.</li>
+                <li><strong class="text-violet-300">4. Con <em>by the time</em> (para cuando):</strong><br>By the time the police arrived, the thieves <u>had escaped</u>.</li>
+                <li><strong class="text-violet-300">5. En el estilo indirecto:</strong><br>"I've finished." → She said she <u>had finished</u>.</li>
+              </ul>
+            </div>
+            <div class="bg-sky-950/30 p-5 md:p-7 rounded-3xl border-2 border-sky-500/40">
+              <h3 class="text-sky-300 font-black text-xl md:text-2xl mb-3">🎞️ Piensa en una línea de tiempo</h3>
+              <p class="text-base md:text-xl text-slate-300 mb-2">① The train <strong>had left</strong> → ② I <strong>got</strong> to the station → ③ AHORA</p>
+              <p class="text-base md:text-xl text-slate-300">Lo que pasó <strong>primero</strong> va en past perfect; lo que pasó <strong>después</strong> va en past simple.</p>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-violet-300 font-black text-xl md:text-2xl mb-3">📐 Dónde va cada palabra</h3>
+              <p class="text-base md:text-xl text-slate-300"><strong>already, just, never, ever</strong>: entre had y el participio → She had <u>already</u> left. · I had <u>never</u> seen it.</p>
+              <p class="text-base md:text-xl text-slate-300"><strong>before</strong> y <strong>yet</strong>: al final → I hadn't seen it <u>before</u>.</p>
+            </div>
+            <div class="bg-amber-950/30 p-5 md:p-7 rounded-3xl border-2 border-amber-500/40">
+              <h3 class="text-amber-300 font-black text-xl md:text-2xl mb-3">⏰ Palabras que lo acompañan</h3>
+              <p class="text-base md:text-xl text-slate-300">already, just, never… before, ever, by the time, by then, before, after, when, because.</p>
+            </div>
+            <div class="bg-rose-950/30 p-5 md:p-7 rounded-3xl border-2 border-rose-500/40">
+              <h3 class="text-rose-300 font-black text-xl md:text-2xl mb-3">🚫 Cuidado</h3>
+              <p class="text-base md:text-xl text-slate-300">Detrás de <em>had</em> va el <strong>participio</strong>, no el pasado: <s>had went</s> → had <strong>gone</strong> · <s>had ate</s> → had <strong>eaten</strong> · <s>had saw</s> → had <strong>seen</strong>.</p>
+            </div>
+          </div>`,
+        mcq: [
+          { q: "When we got to the cinema, the film _____ already _____.", options: ["had / started", "has / started", "was / start", "did / start"], x: "Primero empezó la película y después llegamos → past perfect: had already started." },
+          { q: "She was nervous because she _____ on a plane before.", options: ["had never been", "has never been", "never has been", "had never be"], x: "Experiencia hasta un momento del pasado → had never + participio (been)." },
+          { q: "By the time the police arrived, the thieves _____.", options: ["had escaped", "have escaped", "escape", "had escape"], x: "'By the time' + pasado → la otra acción va en past perfect." },
+          { q: "_____ you ever seen snow before you went to Canada?", options: ["Had", "Have", "Did", "Were"], x: "Experiencia anterior a otro momento pasado (went) → Had you ever seen…?" },
+          { q: "He couldn't pay because he _____ his wallet at home.", options: ["had left", "has left", "leaves", "had leave"], x: "Causa de una situación pasada → had + participio (left)." },
+          { q: "They weren't hungry because they _____ lunch.", options: ["had already had", "have already had", "had already have", "already has had"], x: "Primero comieron; después (no tenían hambre). had + already + had." },
+          { q: "After she _____ her homework, she went out with her friends.", options: ["had finished", "has finished", "had finish", "finishing"], x: "Acción anterior a 'went out' → had finished." },
+          { q: "The streets were wet because it _____ during the night.", options: ["had rained", "has rained", "rains", "had rain"], x: "La lluvia fue antes de ver las calles mojadas → had rained." },
+          { q: "I _____ the book, so I knew how the film ended.", options: ["had read", "have read", "had readed", "was reading"], x: "Leí el libro ANTES de ver la peli → had read (read es irregular)." },
+          { q: "When I got home, I realised I _____ my keys.", options: ["had lost", "have lost", "lose", "had lose"], x: "Perdí las llaves antes de darme cuenta → had lost." }
+        ],
+        gaps: [
+          { text: "When I arrived at the station, the train ___.", hint: "already / leave", answers: ["had already left", "had left already"], x: "Primero se fue el tren → had already left. 'Already' va entre had y el participio." },
+          { text: "She ___ never ___ sushi before that day.", hint: "eat", answers: [["had"], ["eaten"]], x: "had + never + participio (eat → eaten)." },
+          { text: "We couldn't get in because we ___ our keys.", hint: "forget", answers: ["had forgotten"], x: "Causa anterior → had + forgotten." },
+          { text: "___ you ___ him before the party?", hint: "meet", answers: [["had", "Had"], ["met"]], x: "Pregunta: Had + sujeto + participio (met)." },
+          { text: "By the time we got there, everybody ___ home.", hint: "go", answers: ["had gone", "had already gone"], x: "'By the time' → had gone (participio de go)." },
+          { text: "He was hungry because he ___ breakfast.", hint: "not / have", answers: ["hadn't had", "had not had"], x: "Negativa: hadn't + participio. Have → had, así que 'hadn't had'." },
+          { text: "I recognised her because I ___ her photo on Instagram.", hint: "see", answers: ["had seen"], x: "Vi la foto antes de reconocerla → had seen." },
+          { text: "The match ___ when we turned on the TV.", hint: "already / finish", answers: ["had already finished", "had finished already"], x: "Primero terminó el partido → had already finished." },
+          { text: "They ___ each other for years when they got married.", hint: "know", answers: ["had known"], x: "Duración hasta un momento del pasado → had known." },
+          { text: "After he ___ the letter, he posted it.", hint: "write", answers: ["had written", "wrote"], x: "Acción anterior → had written. Con 'after' el orden ya está claro, así que también vale 'wrote'." }
+        ],
+        tr: [
+          { es: "Cuando llegué, la película ya había empezado.", verb: "(arrive / start)", en: "When I arrived, the film had already started.",
+            alts: ["When I [arrived|got there|got to the cinema], the film had [already started|already begun|started already|begun already]."], x: "Lo primero (empezar) en past perfect; lo segundo (llegar) en past simple." },
+          { es: "Nunca había visto la nieve antes.", verb: "(see)", en: "I had never seen snow before.",
+            alts: ["I had never seen [snow|the snow] [before|]."], x: "had + never + participio (seen)." },
+          { es: "Estaba triste porque había perdido a su perro.", verb: "(be / lose)", en: "She was sad because she had lost her dog.",
+            alts: ["[He|She] was [sad|unhappy] because [he|she] had lost [his|her] dog."], x: "Causa anterior → had lost. Sin sujeto: vale he o she." },
+          { es: "¿Habías estado en Italia antes de ese viaje?", verb: "(be)", en: "Had you been to Italy before that trip?",
+            alts: ["Had you [been to|been in|visited] Italy before that [trip|journey|holiday]?", "Had you ever [been to|been in|visited] Italy before that [trip|journey|holiday]?"], x: "Pregunta: Had + you + been." },
+          { es: "Cuando llegamos a la estación, el tren ya se había ido.", verb: "(get / leave)", en: "When we got to the station, the train had already left.",
+            alts: ["When we [got to|arrived at|reached] the station, the train had [already left|already gone|left already|gone already]."], x: "Primero se fue el tren → had already left." },
+          { es: "No habían terminado los deberes cuando llegó el profesor.", verb: "(finish / arrive)", en: "They hadn't finished their homework when the teacher arrived.",
+            alts: ["They [hadn't|had not] finished [their|the] homework when the teacher [arrived|came|came in|got there]."], x: "Negativa: hadn't + participio." },
+          { es: "Ya habíamos comido cuando nos llamaron.", verb: "(eat / call)", en: "We had already eaten when they called us.",
+            alts: ["We had already [eaten|had lunch|had dinner] when they [called|phoned|rang] [us|]."], x: "Primero comimos → had already eaten." },
+          { es: "Me di cuenta de que había dejado el móvil en casa.", verb: "(realise / leave)", en: "I realised that I had left my mobile at home.",
+            alts: ["I realised [that|] I had left my [mobile|phone] at home."], x: "Dejar el móvil ocurrió antes de darme cuenta → had left." },
+          { es: "No había leído el libro antes del examen.", verb: "(read)", en: "I hadn't read the book before the exam.",
+            alts: ["[I|He|She] [hadn't|had not] read the book before the exam."], x: "'Había' puede ser yo, él o ella: valen los tres." },
+          { es: "¿Habían cerrado ya la tienda cuando llegaste?", verb: "(close / arrive)", en: "Had they already closed the shop when you arrived?",
+            alts: ["Had they closed the shop [already|] when you [arrived|got there]?", "Had the shop already closed when you [arrived|got there]?"], x: "Pregunta en past perfect: Had + sujeto + (already) + participio." }
+        ]
+      },
+      {
+        id: "spp", title: "4 · Simple Past vs Present Perfect", short: "SP vs PresPerf", icon: "fa-code-compare",
+        desc: "¿Tiempo terminado o conectado con el presente?",
+        theory: `
+          <h2 class="text-3xl md:text-4xl font-black text-rose-400 mb-3">4 · Simple Past vs Present Perfect</h2>
+          <p class="text-slate-200 text-lg md:text-2xl mb-6 leading-relaxed">Los dos hablan del pasado, pero con una diferencia clave: el <strong>past simple</strong> mira a un <strong>momento terminado</strong>; el <strong>present perfect</strong> conecta el pasado <strong>con ahora</strong>.</p>
+          <div class="space-y-5">
+            <div class="bg-indigo-950/40 p-5 md:p-7 rounded-3xl border-2 border-indigo-500/50">
+              <h3 class="text-indigo-300 font-black text-xl md:text-2xl mb-3">🕰️ Simple Past → tiempo TERMINADO</h3>
+              <ul class="space-y-2 text-base md:text-xl text-slate-300">
+                <li>Se dice (o se sabe) <strong>cuándo</strong>: I <u>saw</u> him <u>yesterday</u>. · She <u>left</u> <u>two hours ago</u>.</li>
+                <li>Preguntas con <strong>When…? / What time…?</strong>: <u>When did</u> you <u>buy</u> it?</li>
+                <li>Periodos cerrados: I <u>lived</u> in Paris for three years. (ya no vivo allí)</li>
+                <li>Personas que ya no viven: Picasso <u>painted</u> thousands of pictures.</li>
+              </ul>
+              <p class="text-base md:text-lg text-slate-400 mt-3">yesterday, last…, …ago, in 2019, when I was…, What time…?, When…?</p>
+            </div>
+            <div class="bg-violet-950/40 p-5 md:p-7 rounded-3xl border-2 border-violet-500/50">
+              <h3 class="text-violet-300 font-black text-xl md:text-2xl mb-3">🔗 Present Perfect → conectado con AHORA</h3>
+              <ul class="space-y-2 text-base md:text-xl text-slate-300">
+                <li>Experiencias sin decir cuándo: I <u>have been</u> to London. · <u>Have</u> you <u>ever eaten</u> sushi?</li>
+                <li>Resultado que se nota ahora: I <u>have lost</u> my keys. (y ahora no puedo entrar)</li>
+                <li>Periodo que <strong>no ha terminado</strong>: I <u>have had</u> three exams <u>this week</u>.</li>
+                <li>Duración que sigue: I <u>have lived</u> here <u>for</u> ten years / <u>since</u> 2015. (y sigo)</li>
+                <li>Noticias recientes: <u>just</u>, <u>already</u>, <u>yet</u> → The film <u>has just started</u>.</li>
+              </ul>
+              <p class="text-base md:text-lg text-slate-400 mt-3">ever, never, just, already, yet, so far, today, this week/year, for, since, How long…?</p>
+            </div>
+            <div class="bg-emerald-950/40 p-5 md:p-7 rounded-3xl border-2 border-emerald-500/50">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">⚖️ Mismo verbo, distinto significado</h3>
+              <p class="text-base md:text-xl text-slate-300 mb-2">I <strong>lived</strong> in Madrid for three years. → ya no vivo allí.</p>
+              <p class="text-base md:text-xl text-slate-300 mb-2">I <strong>have lived</strong> in Madrid for three years. → sigo viviendo allí.</p>
+              <p class="text-base md:text-xl text-slate-300 mb-2">I <strong>lost</strong> my keys last week. → es una historia (quizás ya las encontré).</p>
+              <p class="text-base md:text-xl text-slate-300">I <strong>have lost</strong> my keys. → ahora mismo no las tengo.</p>
+            </div>
+            <div class="bg-sky-950/30 p-5 md:p-7 rounded-3xl border-2 border-sky-500/40">
+              <h3 class="text-sky-300 font-black text-xl md:text-2xl mb-3">💬 Así funciona una conversación</h3>
+              <p class="text-base md:text-xl text-slate-300">A: <strong>Have</strong> you ever <strong>been</strong> to Italy? <span class="text-slate-500">(experiencia → present perfect)</span></p>
+              <p class="text-base md:text-xl text-slate-300">B: Yes, I <strong>have</strong>. I <strong>went</strong> there in 2022. <span class="text-slate-500">(ya decimos cuándo → past simple)</span></p>
+              <p class="text-base md:text-xl text-slate-300">A: <strong>Did</strong> you <strong>like</strong> it? <span class="text-slate-500">(hablamos de ese viaje concreto → past simple)</span></p>
+            </div>
+            <div class="bg-rose-950/30 p-5 md:p-7 rounded-3xl border-2 border-rose-500/40">
+              <h3 class="text-rose-300 font-black text-xl md:text-2xl mb-3">🚫 El error más caro en el examen</h3>
+              <p class="text-base md:text-xl text-slate-300">Con tiempo terminado <strong>NUNCA</strong> va present perfect: <s>I have seen him yesterday.</s> → I <strong>saw</strong> him yesterday. <s>When have you arrived?</s> → When <strong>did</strong> you <strong>arrive</strong>?</p>
+              <p class="text-base md:text-lg text-slate-400 mt-2">💡 En inglés americano a veces se oye <em>"I already ate"</em>, pero en clase y en el examen usamos el inglés británico: <strong>I have already eaten</strong>.</p>
+            </div>
+          </div>`,
+        mcq: [
+          { q: "I _____ to London in 2019.", options: ["went", "have gone", "have been", "go"], x: "'In 2019' es un momento terminado → past simple." },
+          { q: "_____ you ever _____ a famous person?", options: ["Have / met", "Did / meet", "Have / meet", "Did / met"], x: "Experiencia sin decir cuándo, con 'ever' → Have + participio (met)." },
+          { q: "When _____ you _____ your new phone?", options: ["did / buy", "have / bought", "did / bought", "have / buy"], x: "Preguntas con 'When' → past simple: When did you buy…?" },
+          { q: "She _____ in Zaragoza since 2020.", options: ["has lived", "lived", "lives", "is living"], x: "'Since' + sigue viviendo allí → present perfect." },
+          { q: "I _____ my homework yet, so I can't go out.", options: ["haven't finished", "didn't finish", "don't finish", "hadn't finished"], x: "'Yet' + consecuencia ahora (can't go out) → present perfect." },
+          { q: "Picasso _____ more than 20,000 works of art.", options: ["painted", "has painted", "paints", "had painted"], x: "Picasso ya no vive: su vida está terminada → past simple." },
+          { q: "We _____ three tests this week, and it's only Wednesday!", options: ["have had", "had", "have", "are having"], x: "'This week' todavía no ha terminado → present perfect." },
+          { q: "Last year my parents _____ a new car.", options: ["bought", "have bought", "buyed", "has bought"], x: "'Last year' → past simple. Buy → bought." },
+          { q: "I _____ Laura for ten years. We are still best friends.", options: ["have known", "knew", "know", "had known"], x: "Duración que continúa ahora (still best friends) → present perfect." },
+          { q: "A: Have you ever been to Italy? B: Yes, I _____ there two years ago.", options: ["went", "have gone", "have been", "go"], x: "Al decir cuándo (two years ago) pasamos a past simple." }
+        ],
+        gaps: [
+          { text: "I ___ Paris three times in my life.", hint: "visit", answers: ["have visited", "'ve visited", "ve visited"], x: "Experiencia de vida, sin decir cuándo → present perfect." },
+          { text: "We ___ Paris last summer.", hint: "visit", answers: ["visited"], x: "'Last summer' → past simple." },
+          { text: "___ you ever ___ a horse?", hint: "ride", answers: [["have", "Have"], ["ridden"]], x: "Experiencia con 'ever' → Have + participio (ride → ridden)." },
+          { text: "When ___ you ___ your homework?", hint: "do", answers: [["did"], ["do"]], x: "'When' → past simple: When did you do…?" },
+          { text: "My uncle ___ in Germany for five years, but now he lives in Spain again.", hint: "work", answers: ["worked"], x: "Periodo cerrado (ahora vive en España) → past simple." },
+          { text: "My aunt ___ in Germany for five years and she still loves her job.", hint: "work", answers: ["has worked", "has been working"], x: "Sigue trabajando allí (still) → present perfect." },
+          { text: "I ___ him since we were at primary school.", hint: "not / see", answers: ["haven't seen", "have not seen"], x: "'Since' + hasta ahora → present perfect negativo." },
+          { text: "She ___ her arm yesterday playing basketball.", hint: "break", answers: ["broke"], x: "'Yesterday' → past simple. Break → broke." },
+          { text: "They ___ just ___ the match. Let's celebrate!", hint: "win", answers: [["have", "'ve"], ["won"]], x: "'Just' + resultado ahora → have just won." },
+          { text: "The Beatles ___ many famous songs.", hint: "write", answers: ["wrote"], x: "El grupo ya no existe: etapa terminada → past simple." }
+        ],
+        tr: [
+          { es: "Nunca he estado en Londres.", verb: "(be)", en: "I have never been to London.",
+            alts: ["I have never [been to|been in|visited] London."], x: "Experiencia de vida → have never + participio." },
+          { es: "Fui a Londres el verano pasado.", verb: "(go)", en: "I went to London last summer.",
+            alts: ["Last summer I went to London.", "I [visited|was in] London last summer."], x: "'El verano pasado' → past simple." },
+          { es: "¿Has visto a Juan hoy?", verb: "(see)", en: "Have you seen Juan today?",
+            alts: [], x: "'Hoy' todavía no ha terminado → present perfect." },
+          { es: "¿Cuándo empezaste a estudiar inglés?", verb: "(start)", en: "When did you start studying English?",
+            alts: ["When did you [start|begin] [studying|to study|learning|to learn] English?"], x: "'Cuándo' → past simple: When did you start…?" },
+          { es: "Vivo en este pueblo desde 2015.", verb: "(live)", en: "I have lived in this village since 2015.",
+            alts: ["I [have lived|have been living] in this [village|town] since 2015."], x: "'Desde' + sigo viviendo → present perfect (no present simple)." },
+          { es: "Viví en Madrid tres años, pero ahora vivo en Huesca.", verb: "(live)", en: "I lived in Madrid for three years, but now I live in Huesca.",
+            alts: ["I lived in Madrid [for three years|three years], but [now I live|I now live|I live] in Huesca [now|]."], x: "Periodo cerrado → past simple. Lo de ahora → present simple." },
+          { es: "Hemos tenido dos exámenes esta semana.", verb: "(have)", en: "We have had two exams this week.",
+            alts: ["This week we have had two exams."], x: "'Esta semana' no ha terminado → present perfect." },
+          { es: "Mi padre ha perdido las gafas y no puede leer.", verb: "(lose)", en: "My father has lost his glasses and he can't read.",
+            alts: ["My father has lost his glasses [and he can't|and can't|so he can't|so can't] read."], x: "Resultado que se nota ahora → present perfect." },
+          { es: "Mozart compuso más de 600 obras.", verb: "(compose)", en: "Mozart composed more than 600 works.",
+            alts: ["Mozart [composed|wrote] [more than|over] [600|six hundred] [works|pieces|pieces of music|compositions]."], x: "Mozart ya no vive → past simple." },
+          { es: "¿Alguna vez has perdido un avión?", verb: "(miss)", en: "Have you ever missed a flight?",
+            alts: ["Have you ever missed a [flight|plane]?"], x: "Experiencia con 'alguna vez' → Have you ever + participio." }
+        ]
+      },
+      {
+        id: "spc", title: "5 · Simple Past vs Past Continuous", short: "SP vs PastCont", icon: "fa-bolt",
+        desc: "La acción corta que interrumpe a la larga.",
+        theory: `
+          <h2 class="text-3xl md:text-4xl font-black text-amber-400 mb-3">5 · Simple Past vs Past Continuous</h2>
+          <p class="text-slate-200 text-lg md:text-2xl mb-6 leading-relaxed">Para contar una historia se usan los dos juntos: el <strong>past continuous</strong> pinta el <strong>fondo</strong> (lo que estaba pasando) y el <strong>past simple</strong> cuenta los <strong>hechos</strong> (lo que pasó).</p>
+          <div class="space-y-5">
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-amber-400 font-black text-xl md:text-2xl mb-3">⚡ La acción larga y la acción corta</h3>
+              <p class="text-base md:text-xl text-slate-300 mb-2">I <u>was having</u> a shower <strong>when</strong> the phone <u>rang</u>.</p>
+              <p class="text-base md:text-xl text-slate-300 mb-2"><span class="text-sky-300 font-bold">was having</span> = acción larga, ya estaba en marcha (past continuous)</p>
+              <p class="text-base md:text-xl text-slate-300"><span class="text-indigo-300 font-bold">rang</span> = acción corta que la interrumpe (past simple)</p>
+            </div>
+            <div class="bg-emerald-950/40 p-5 md:p-7 rounded-3xl border-2 border-emerald-500/50">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">🔑 WHEN y WHILE</h3>
+              <p class="text-base md:text-xl text-slate-300 mb-2"><strong>WHEN</strong> + acción corta (past simple): I was sleeping <u>when</u> you <u>called</u>.</p>
+              <p class="text-base md:text-xl text-slate-300 mb-2"><strong>WHILE / AS</strong> + acción larga (past continuous): <u>While</u> I <u>was sleeping</u>, you called.</p>
+              <p class="text-base md:text-xl text-slate-300">Dos acciones largas a la vez: <u>While</u> I <u>was studying</u>, my sister <u>was playing</u> the piano.</p>
+            </div>
+            <div class="bg-sky-950/30 p-5 md:p-7 rounded-3xl border-2 border-sky-500/40">
+              <h3 class="text-sky-300 font-black text-xl md:text-2xl mb-3">⚖️ Mismo "when", distinto significado</h3>
+              <p class="text-base md:text-xl text-slate-300 mb-2">When Mum arrived, we <strong>had</strong> dinner. → primero llegó y <strong>después</strong> cenamos.</p>
+              <p class="text-base md:text-xl text-slate-300">When Mum arrived, we <strong>were having</strong> dinner. → ya estábamos cenando <strong>cuando</strong> llegó.</p>
+              <p class="text-base md:text-lg text-slate-400 mt-2">Past simple + past simple = una acción <strong>detrás de otra</strong>.</p>
+            </div>
+            <div class="bg-indigo-950/30 p-5 md:p-7 rounded-3xl border-2 border-indigo-500/40">
+              <h3 class="text-indigo-300 font-black text-xl md:text-2xl mb-3">📖 Así se cuenta una historia</h3>
+              <p class="text-base md:text-xl text-slate-300">It <u>was raining</u> and the wind <u>was blowing</u>. I <u>was walking</u> home when suddenly I <u>heard</u> a noise. I <u>turned</u> round and <u>saw</u> a small dog.</p>
+              <p class="text-base md:text-lg text-slate-400 mt-2">Fondo y ambiente → continuous · Hechos que hacen avanzar la historia → simple.</p>
+            </div>
+            <div class="bg-rose-950/30 p-5 md:p-7 rounded-3xl border-2 border-rose-500/40">
+              <h3 class="text-rose-300 font-black text-xl md:text-2xl mb-3">🚫 Recuerda</h3>
+              <p class="text-base md:text-xl text-slate-300">Los verbos de estado (know, like, want, understand…) van siempre en past simple: <s>I was knowing</s> → I <strong>knew</strong>.</p>
+              <p class="text-base md:text-xl text-slate-300 mt-2">El imperfecto español (<em>comía, jugaba</em>) puede ser past continuous (<em>estaba comiendo</em>) o past simple / used to (hábito: <em>comía allí todos los días</em>).</p>
+            </div>
+          </div>`,
+        mcq: [
+          { q: "I _____ a shower when the phone rang.", options: ["was having", "were having", "have", "am having"], x: "Acción larga interrumpida (el teléfono sonó) → was having." },
+          { q: "While we _____ TV, the lights went out.", options: ["were watching", "was watching", "watch", "are watching"], x: "'While' + acción larga → past continuous, sujeto we → were." },
+          { q: "When I saw the accident, I _____ the police.", options: ["called", "was calling", "were calling", "call"], x: "Primero vi el accidente y después llamé → dos acciones seguidas en past simple." },
+          { q: "She _____ her leg while she was skiing.", options: ["broke", "was breaking", "breaks", "has broke"], x: "Acción corta que ocurre durante otra larga → past simple (break → broke)." },
+          { q: "It _____ when we left the cinema, so we took a taxi.", options: ["was raining", "were raining", "rains", "is raining"], x: "Ya estaba lloviendo al salir → past continuous." },
+          { q: "I _____ my old teacher while I _____ in the supermarket.", options: ["met / was shopping", "was meeting / shopped", "meet / was shopping", "was meeting / was shopping"], x: "Acción corta (met) durante una larga (was shopping)." },
+          { q: "_____ you _____ when I sent you the message?", options: ["Were / sleeping", "Did / sleep", "Was / sleeping", "Were / slept"], x: "Acción larga en progreso cuando llegó el mensaje → Were you sleeping?" },
+          { q: "When I _____ the box, I found a lovely present.", options: ["opened", "was opening", "were opening", "open"], x: "Primero la abrí y después encontré el regalo → past simple." },
+          { q: "He _____ the answer, so he _____ his hand.", options: ["knew / put up", "was knowing / put up", "knew / was putting up", "was knowing / was putting up"], x: "'Know' es de estado → knew. Luego una acción seguida → put up." },
+          { q: "The sun _____ when I _____ up this morning.", options: ["was shining / woke", "shone / was waking", "was shining / was waking", "shines / woke"], x: "El sol ya brillaba (fondo) cuando me desperté (acción corta)." }
+        ],
+        gaps: [
+          { text: "I ___ dinner when my friend called.", hint: "have", answers: ["was having"], x: "Acción larga interrumpida → was having." },
+          { text: "When I was walking home, I ___ a strange noise.", hint: "hear", answers: ["heard"], x: "Acción corta durante la larga → past simple (hear → heard)." },
+          { text: "They ___ tennis when it started to rain.", hint: "play", answers: ["were playing"], x: "Acción larga interrumpida por la lluvia → were playing." },
+          { text: "While she was driving, her phone ___.", hint: "ring", answers: ["rang"], x: "Acción corta → past simple (ring → rang)." },
+          { text: "Where ___ you ___ when I saw you yesterday?", hint: "go", answers: [["were"], ["going"]], x: "Acción en marcha cuando te vi → were you going." },
+          { text: "The phone rang while I ___ a shower.", hint: "have", answers: ["was having"], x: "'While' + acción larga → was having." },
+          { text: "When the film finished, we ___ home.", hint: "go", answers: ["went"], x: "Primero terminó la peli, después fuimos → past simple." },
+          { text: "I ___ my phone while I was running in the park.", hint: "lose", answers: ["lost"], x: "Acción corta durante la larga → lost." },
+          { text: "It was a beautiful day. The birds ___ and the sun was shining.", hint: "sing", answers: ["were singing"], x: "Descripción del fondo de la historia → were singing." },
+          { text: "He ___ off his bike because he wasn't looking where he was going.", hint: "fall", answers: ["fell"], x: "Acción corta → past simple (fall → fell)." }
+        ],
+        tr: [
+          { es: "Estaba cenando cuando sonó el teléfono.", verb: "(have dinner / ring)", en: "I was having dinner when the phone rang.",
+            alts: ["[I|He|She] was [having dinner|eating dinner|having supper] when the phone rang."], x: "Larga (cenar) en continuous + corta (sonar) en simple." },
+          { es: "Mientras paseaba por el parque, vi a mi profesora.", verb: "(walk / see)", en: "While I was walking in the park, I saw my teacher.",
+            alts: ["[While|As|When] I was walking [in|through|around] the park, I saw my teacher.", "I saw my teacher while I was walking [in|through|around] the park."], x: "'Mientras' → while + past continuous; lo corto (vi) en past simple." },
+          { es: "Cuando llegó la policía, los ladrones se escaparon.", verb: "(arrive / escape)", en: "When the police arrived, the thieves escaped.",
+            alts: ["When the police [arrived|came|got there], the [thieves|robbers] [escaped|ran away|got away]."], x: "Primero llegó la policía, luego escaparon → simple + simple." },
+          { es: "Cuando llegó la policía, los ladrones estaban escapando.", verb: "(arrive / escape)", en: "When the police arrived, the thieves were escaping.",
+            alts: ["When the police [arrived|came|got there], the [thieves|robbers] were [escaping|running away|getting away]."], x: "Ya estaban escapando al llegar la policía → past continuous." },
+          { es: "Se rompió la pierna mientras esquiaba.", verb: "(break / ski)", en: "She broke her leg while she was skiing.",
+            alts: ["[He|She] broke [his|her] leg while [he was skiing|she was skiing|skiing]."], x: "Corta (romper) en simple + larga (esquiar) en continuous." },
+          { es: "¿Qué hacías cuando se fue la luz?", verb: "(do / go out)", en: "What were you doing when the lights went out?",
+            alts: ["What were you doing when [the lights went out|the light went out|the power went out|the power went off|the electricity went off|there was a power cut]?"], x: "Acción en marcha → were you doing." },
+          { es: "No estaba escuchando, así que no oí la pregunta.", verb: "(listen / hear)", en: "I wasn't listening, so I didn't hear the question.",
+            alts: ["I didn't hear the question because I wasn't listening."], x: "Fondo en continuous (wasn't listening), hecho en simple (didn't hear)." },
+          { es: "Llovía mucho cuando salimos del colegio.", verb: "(rain / leave)", en: "It was raining a lot when we left school.",
+            alts: ["It was raining [a lot|heavily|hard] when we [left school|left the school|came out of school|came out of the school|got out of school]."], x: "Fondo (llovía) en continuous; acción corta (salimos) en simple." },
+          { es: "Vi un accidente cuando iba al trabajo.", verb: "(see / go)", en: "I saw an accident when I was going to work.",
+            alts: ["I saw an accident [when|while|as] I was [going|driving|walking|on my way] to work.", "I saw an accident on my way to work."], x: "Acción corta (vi) durante una larga (iba) → simple + continuous." },
+          { es: "Mi madre leía mientras mi padre dormía.", verb: "(read / sleep)", en: "My mother was reading while my father was sleeping.",
+            alts: ["My mother was reading while my father was [sleeping|asleep].", "My mother read while my father slept.", "While my father was sleeping, my mother was reading."], x: "Dos acciones largas a la vez → while + past continuous." }
+        ]
+      },
+      {
+        id: "spf", title: "6 · Simple Past vs Past Perfect", short: "SP vs PastPerf", icon: "fa-shuffle",
+        desc: "¿Qué pasó primero? Ordena los hechos del pasado.",
+        theory: `
+          <h2 class="text-3xl md:text-4xl font-black text-fuchsia-400 mb-3">6 · Simple Past vs Past Perfect</h2>
+          <p class="text-slate-200 text-lg md:text-2xl mb-6 leading-relaxed">Cuando hay <strong>dos acciones en el pasado</strong>, pregúntate: <strong>¿cuál pasó primero?</strong> La primera va en <strong>past perfect</strong>; la segunda, en <strong>past simple</strong>.</p>
+          <div class="space-y-5">
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-amber-400 font-black text-xl md:text-2xl mb-3">🎞️ Una detrás de otra o "ya había pasado"</h3>
+              <p class="text-base md:text-xl text-slate-300 mb-2">When I arrived, Ana <strong>left</strong>. → llegué yo y <strong>después</strong> se fue Ana (la vi).</p>
+              <p class="text-base md:text-xl text-slate-300">When I arrived, Ana <strong>had left</strong>. → Ana se fue <strong>antes</strong> de que yo llegara (no la vi).</p>
+            </div>
+            <div class="bg-emerald-950/40 p-5 md:p-7 rounded-3xl border-2 border-emerald-500/50">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">📌 Cuándo hace falta el past perfect</h3>
+              <ul class="space-y-3 text-base md:text-xl text-slate-300">
+                <li><strong class="text-fuchsia-300">Volvemos atrás en la historia:</strong> I was very hungry. I <u>hadn't eaten</u> anything all day.</li>
+                <li><strong class="text-fuchsia-300">Con <em>by the time</em>:</strong> By the time we <u>got</u> there, the concert <u>had finished</u>.</li>
+                <li><strong class="text-fuchsia-300">Causa de algo pasado (because):</strong> She <u>failed</u> because she <u>hadn't studied</u>.</li>
+                <li><strong class="text-fuchsia-300">"Nunca antes" en el pasado:</strong> I <u>had never flown</u> before that trip.</li>
+                <li><strong class="text-fuchsia-300">"It was the first time…":</strong> It <u>was</u> the first time I <u>had seen</u> the sea.</li>
+              </ul>
+            </div>
+            <div class="bg-sky-950/30 p-5 md:p-7 rounded-3xl border-2 border-sky-500/40">
+              <h3 class="text-sky-300 font-black text-xl md:text-2xl mb-3">🔑 AFTER y BEFORE</h3>
+              <p class="text-base md:text-xl text-slate-300 mb-2">Con <strong>after</strong> y <strong>before</strong> el orden ya está claro, así que el past perfect es <strong>opcional</strong>:</p>
+              <p class="text-base md:text-xl text-slate-300">After I <u>had finished</u> / <u>finished</u> my homework, I went out. ✓ ✓</p>
+            </div>
+            <div class="bg-indigo-950/30 p-5 md:p-7 rounded-3xl border-2 border-indigo-500/40">
+              <h3 class="text-indigo-300 font-black text-xl md:text-2xl mb-3">📖 Contar en orden = past simple</h3>
+              <p class="text-base md:text-xl text-slate-300">Si cuentas los hechos <strong>en el orden en que pasaron</strong>, basta el past simple: I <u>got up</u>, <u>had</u> breakfast and <u>went</u> to school.</p>
+            </div>
+            <div class="bg-amber-950/30 p-5 md:p-7 rounded-3xl border-2 border-amber-500/40">
+              <h3 class="text-amber-300 font-black text-xl md:text-2xl mb-3">⏰ Pistas</h3>
+              <p class="text-base md:text-xl text-slate-300"><strong>already, just, never… before, by the time, because, it was the first time</strong> → suele ir past perfect.</p>
+              <p class="text-base md:text-xl text-slate-300"><strong>then, after that, next, and</strong> (en secuencia) → past simple.</p>
+            </div>
+          </div>`,
+        mcq: [
+          { q: "When I got to the party, Tom _____ home, so I didn't see him.", options: ["had gone", "went", "has gone", "goes"], x: "Tom se fue ANTES de que yo llegara (no lo vi) → had gone." },
+          { q: "When I got to the party, Tom _____ me a drink. It was very kind of him.", options: ["gave", "had given", "has given", "gives"], x: "Llegué y DESPUÉS me dio algo → secuencia → past simple." },
+          { q: "I _____ that film before, so I didn't want to see it again.", options: ["had seen", "have seen", "was seeing", "see"], x: "Lo vi antes de ese momento del pasado → had seen." },
+          { q: "By the time I _____, the shop had closed.", options: ["arrived", "had arrived", "have arrived", "arrive"], x: "Con 'by the time', la acción posterior (llegar) va en past simple." },
+          { q: "He _____ already _____ when I phoned him.", options: ["had / left", "has / left", "did / leave", "was / left"], x: "Ya se había ido antes de mi llamada → had already left." },
+          { q: "After the film _____, we went for a pizza.", options: ["had finished", "has finished", "had finish", "finishing"], x: "La película acabó antes → had finished (con 'after' también valdría 'finished')." },
+          { q: "It was the first time I _____ a kangaroo.", options: ["had seen", "have seen", "see", "was seeing"], x: "'It was the first time' → past perfect." },
+          { q: "When Mum came home, we _____ the kitchen, so it was clean.", options: ["had already cleaned", "have already cleaned", "already clean", "were already clean"], x: "Limpiamos ANTES de que llegara → had already cleaned." },
+          { q: "I _____ him immediately because we had met before.", options: ["recognised", "had recognised", "have recognised", "recognise"], x: "Lo reconocí en ese momento (acción posterior) → past simple." },
+          { q: "She failed the exam because she _____.", options: ["hadn't studied", "hasn't studied", "didn't studied", "wasn't study"], x: "Causa anterior al suspenso → hadn't studied." }
+        ],
+        gaps: [
+          { text: "When we arrived at the cinema, the film ___.", hint: "already / start", answers: ["had already started", "had started already"], x: "El film empezó antes de llegar → had already started." },
+          { text: "When the film finished, we ___ home.", hint: "walk", answers: ["walked"], x: "Primero terminó y después fuimos → secuencia → past simple." },
+          { text: "She ___ Rome before, so she knew the city well.", hint: "visit", answers: ["had visited"], x: "Visitó Roma antes de ese momento → had visited." },
+          { text: "By the time the ambulance came, the man ___ consciousness.", hint: "lose", answers: ["had lost", "had already lost"], x: "'By the time' → had lost." },
+          { text: "He ___ what to say because he hadn't prepared the speech.", hint: "not / know", answers: ["didn't know", "did not know"], x: "Situación en el momento (no sabía) → past simple. 'Know' no va en continuo." },
+          { text: "We ___ each other before that day.", hint: "never / meet", answers: ["had never met"], x: "'Never… before' en el pasado → had never met." },
+          { text: "The garden was full of water because it ___ all night.", hint: "rain", answers: ["had rained", "had been raining"], x: "La lluvia fue antes → had rained." },
+          { text: "When I opened the fridge, I saw that somebody ___ my yoghurt.", hint: "eat", answers: ["had eaten"], x: "Alguien se lo comió antes de que yo abriera la nevera → had eaten." },
+          { text: "She ___ to bed after she had brushed her teeth.", hint: "go", answers: ["went"], x: "Acción posterior → past simple (go → went)." },
+          { text: "I ___ my homework, so I watched a film.", hint: "finish", answers: ["had finished", "had already finished", "finished"], x: "Acabé antes de ver la peli → had finished (en secuencia también vale 'finished')." }
+        ],
+        tr: [
+          { es: "Cuando llegué a casa, mi hermano ya había cenado.", verb: "(get / have dinner)", en: "When I got home, my brother had already had dinner.",
+            alts: ["When I [got home|arrived home|came home|got back home|got back], my brother had already [had dinner|eaten|had supper|had his dinner]."], x: "Mi hermano cenó ANTES de que yo llegara → had already had dinner." },
+          { es: "Cuando llegué a casa, mi hermano se fue.", verb: "(get / leave)", en: "When I got home, my brother left.",
+            alts: ["When I [got home|arrived home|came home|got back home|got back], my brother [left|went out]."], x: "Llegué y DESPUÉS se fue → secuencia → past simple las dos." },
+          { es: "No pude entrar porque había olvidado las llaves.", verb: "(can / forget)", en: "I couldn't get in because I had forgotten my keys.",
+            alts: ["I [couldn't|could not|wasn't able to] [get in|go in|come in|enter|get into the house|get inside|open the door] because I had forgotten [my|the] keys."], x: "La causa (olvidar) ocurrió antes → had forgotten." },
+          { es: "Nunca había viajado en avión hasta ese verano.", verb: "(travel)", en: "I had never travelled by plane until that summer.",
+            alts: ["I had never [travelled by plane|travelled by air|travelled on a plane|flown|been on a plane|taken a plane] [until|before] that summer."], x: "'Nunca… hasta' un momento del pasado → had never + participio." },
+          { es: "Después de terminar el examen, salimos a celebrarlo.", verb: "(finish / go out)", en: "After we had finished the exam, we went out to celebrate.",
+            alts: ["After [we had finished|we finished|finishing] the exam, we went out [to celebrate|to celebrate it|celebrating]."], x: "Con 'after' valen el past perfect y el past simple." },
+          { es: "Cuando llegamos, la tienda ya había cerrado.", verb: "(arrive / close)", en: "When we arrived, the shop had already closed.",
+            alts: ["When we [arrived|got there], the shop had [already closed|closed already]."], x: "Cerró ANTES de que llegáramos → had already closed." },
+          { es: "Él sabía la respuesta porque había leído el libro.", verb: "(know / read)", en: "He knew the answer because he had read the book.",
+            alts: [], x: "Estado en el pasado (knew) + causa anterior (had read)." },
+          { es: "Cuando llegó la policía, el ladrón se había escapado.", verb: "(arrive / escape)", en: "When the police arrived, the thief had escaped.",
+            alts: ["When the police [arrived|came|got there], the [thief|robber|burglar] had [escaped|run away|got away|already escaped|already run away]."], x: "Escapó ANTES de que llegara la policía → had escaped." },
+          { es: "Me dijo que había aprobado todos los exámenes.", verb: "(tell / pass)", en: "He told me that he had passed all his exams.",
+            alts: ["[He|She] told me [that|] [he|she] had passed all [his|her|the|of his|of her|of the] exams.", "[He|She] said [to me|] [that|] [he|she] had passed all [his|her|the] exams."], x: "Estilo indirecto: aprobó antes de decírmelo → had passed." },
+          { es: "¿Habías comido antes de venir?", verb: "(eat / come)", en: "Had you eaten before you came?",
+            alts: ["Had you [eaten|had lunch|had dinner|had something to eat] before [you came|coming|you came here|coming here]?"], x: "Pregunta en past perfect: Had + you + participio." }
+        ]
+      },
+      {
+        id: "review", title: "7 · Review of Past Tenses", short: "Review", icon: "fa-trophy",
+        desc: "Todos los pasados mezclados, como en el examen.",
+        theory: `
+          <h2 class="text-3xl md:text-4xl font-black text-emerald-400 mb-3">7 · Review of Past Tenses</h2>
+          <p class="text-slate-200 text-lg md:text-2xl mb-6 leading-relaxed">Aquí cae de todo: <strong>past simple, past continuous, past perfect y present perfect</strong>. Antes de responder, hazte <strong>estas cuatro preguntas</strong>.</p>
+          <div class="space-y-5">
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">🗂️ Resumen</h3>
+              <ul class="space-y-3 text-base md:text-xl text-slate-300">
+                <li><strong class="text-indigo-300">Past simple</strong> (worked / went): acción terminada, momento concreto. <em>I <u>went</u> to Rome last year.</em></li>
+                <li><strong class="text-sky-300">Past continuous</strong> (was / were + -ing): acción en marcha en el pasado. <em>I <u>was sleeping</u> at midnight.</em></li>
+                <li><strong class="text-violet-300">Past perfect</strong> (had + participio): lo que pasó antes de otro pasado. <em>The train <u>had left</u> when I arrived.</em></li>
+                <li><strong class="text-rose-300">Present perfect</strong> (have / has + participio): pasado conectado con ahora. <em>I <u>have</u> never <u>been</u> to Rome.</em></li>
+              </ul>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">1️⃣ ¿El tiempo está terminado o llega hasta ahora?</h3>
+              <p class="text-base md:text-xl text-slate-300"><em>yesterday, ago, last…, in 2010, When…?</em> → past · <em>ever, never, yet, just, already, today, this week, for / since (hasta ahora)</em> → present perfect.</p>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">2️⃣ ¿Estaba en marcha?</h3>
+              <p class="text-base md:text-xl text-slate-300"><em>at 5 o'clock yesterday, while, all day, this time last year</em>, o una acción interrumpida → past continuous.</p>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">3️⃣ ¿Ocurrió ANTES de otra acción pasada?</h3>
+              <p class="text-base md:text-xl text-slate-300"><em>already, by the time, never… before, because, it was the first time</em> → past perfect.</p>
+            </div>
+            <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800">
+              <h3 class="text-emerald-300 font-black text-xl md:text-2xl mb-3">4️⃣ ¿Es un verbo de estado?</h3>
+              <p class="text-base md:text-xl text-slate-300">know, like, want, need, understand, believe, belong, have (poseer) → <strong>nunca en continuo</strong>.</p>
+            </div>
+            <div class="bg-amber-950/30 p-5 md:p-7 rounded-3xl border-2 border-amber-500/40">
+              <h3 class="text-amber-300 font-black text-xl md:text-2xl mb-3">✅ Repasa siempre esto antes de entregar</h3>
+              <p class="text-base md:text-xl text-slate-300">¿Has puesto <em>didn't</em> + infinitivo (no <s>didn't went</s>)? ¿Has usado <em>was</em> con I/he/she/it y <em>were</em> con you/we/they? ¿Detrás de <em>had / have</em> va el <strong>participio</strong> (gone, seen, eaten)? ¿Hay un <em>yesterday</em> o un <em>ago</em> escondido que te obliga al past simple?</p>
+            </div>
+          </div>`,
+        mcq: [
+          { q: "I _____ my grandparents last weekend.", options: ["visited", "have visited", "had visited", "visit"], x: "'Last weekend' → past simple." },
+          { q: "While I _____ my homework, my phone rang.", options: ["was doing", "did", "had done", "have done"], x: "'While' + acción larga interrumpida → past continuous." },
+          { q: "When we arrived at the airport, our plane _____ already _____.", options: ["had / left", "has / left", "is / leaving", "did / leave"], x: "El avión se fue ANTES de llegar nosotros → past perfect." },
+          { q: "_____ you ever _____ a snake?", options: ["Have / touched", "Did / touch", "Had / touched", "Were / touching"], x: "Experiencia de vida hasta ahora con 'ever' → present perfect." },
+          { q: "She _____ in London for three years. Then she moved to Dublin.", options: ["lived", "has lived", "has been living", "lives"], x: "Periodo cerrado (después se mudó) → past simple." },
+          { q: "It _____ heavily, so we stayed at home.", options: ["was raining", "has rained", "had raining", "rains"], x: "Fondo de la situación pasada → past continuous." },
+          { q: "I didn't go to the cinema with them because I _____ the film.", options: ["had already seen", "have already seen", "was already seeing", "already see"], x: "Causa anterior a 'didn't go' → past perfect." },
+          { q: "We _____ three books so far this term.", options: ["have read", "had read", "were reading", "reads"], x: "'So far this term' (hasta ahora) → present perfect." },
+          { q: "The police _____ the thief while he _____ over the wall.", options: ["caught / was climbing", "were catching / climbed", "had caught / climbed", "catch / is climbing"], x: "Acción corta (caught) durante una larga (while… was climbing)." },
+          { q: "When I got home, I _____ that someone _____ the window.", options: ["saw / had broken", "had seen / broke", "was seeing / had broken", "saw / has broken"], x: "Primero rompieron la ventana (had broken) y después lo vi (saw)." }
+        ],
+        gaps: [
+          { text: "I ___ this book twice. It's my favourite.", hint: "read", answers: ["have read", "'ve read", "ve read"], x: "Experiencia hasta ahora (twice) → present perfect." },
+          { text: "Yesterday I ___ up at seven.", hint: "get", answers: ["got"], x: "'Yesterday' → past simple (get → got)." },
+          { text: "At midnight we ___ still ___.", hint: "dance", answers: [["were"], ["dancing"]], x: "Acción en marcha a una hora concreta → were still dancing." },
+          { text: "When I got to school, I realised I ___ my homework at home.", hint: "leave", answers: ["had left"], x: "Lo dejé en casa ANTES de darme cuenta → had left." },
+          { text: "___ you ___ to the party last night?", hint: "go", answers: [["did", "Did"], ["go"]], x: "'Last night' → Did you go…?" },
+          { text: "She ___ her phone while she was running.", hint: "drop", answers: ["dropped"], x: "Acción corta durante otra larga → past simple (drop → dropped)." },
+          { text: "We ___ here since last September.", hint: "live", answers: ["have lived", "'ve lived", "ve lived", "have been living", "'ve been living"], x: "'Since' + hasta ahora → present perfect." },
+          { text: "They were tired because they ___ all day.", hint: "work", answers: ["had worked", "had been working"], x: "Causa anterior a una situación pasada → past perfect." },
+          { text: "My brother ___ never ___ on a plane before last summer.", hint: "be", answers: [["had"], ["been"]], x: "'Never… before' + momento pasado → had never been." },
+          { text: "What ___ you ___ at this time yesterday?", hint: "do", answers: [["were"], ["doing"]], x: "'At this time yesterday' → past continuous." }
+        ],
+        tr: [
+          { es: "Ayer me levanté a las siete.", verb: "(get up)", en: "Yesterday I got up at seven.",
+            alts: ["I got up at seven yesterday."], x: "'Ayer' → past simple." },
+          { es: "Estábamos viendo una película cuando se fue la luz.", verb: "(watch / go out)", en: "We were watching a film when the lights went out.",
+            alts: ["We were watching a film when [the lights went out|the light went out|the power went out|the power went off|the electricity went off|there was a power cut]."], x: "Larga (ver) en continuous + corta (irse la luz) en simple." },
+          { es: "Nunca he estado en Francia.", verb: "(be)", en: "I have never been to France.",
+            alts: ["I have never [been to|been in|visited] France."], x: "Experiencia de vida → present perfect." },
+          { es: "Cuando nos despertamos, ya había dejado de nevar.", verb: "(wake up / stop)", en: "When we woke up, it had already stopped snowing.",
+            alts: ["When we woke up, it had [already stopped snowing|stopped snowing already].", "When we woke up, the snow had already stopped."], x: "Dejó de nevar ANTES de despertarnos → past perfect." },
+          { es: "¿Has terminado ya los deberes?", verb: "(finish)", en: "Have you finished your homework yet?",
+            alts: ["Have you [already finished|finished] [your|the] homework [yet|already|]?"], x: "'Ya' en pregunta sobre algo conectado con ahora → present perfect." },
+          { es: "Conocí a mi mejor amigo en 2018.", verb: "(meet)", en: "I met my best friend in 2018.",
+            alts: ["I met my best [friend|mate] in 2018."], x: "Año concreto → past simple (meet → met)." },
+          { es: "Mientras yo hacía los deberes, mi madre preparaba la cena.", verb: "(do / make)", en: "While I was doing my homework, my mother was making dinner.",
+            alts: ["[While|As] I was doing [my|the] homework, my mother [was making|was cooking|was preparing|made|cooked|prepared] dinner."], x: "Dos acciones largas a la vez → while + past continuous." },
+          { es: "Llevamos tres años viviendo aquí.", verb: "(live)", en: "We have been living here for three years.",
+            alts: ["We have lived here for three years."], x: "'Llevar + gerundio' hasta ahora → present perfect (continuous)." },
+          { es: "Nunca había hecho un examen tan difícil.", verb: "(do)", en: "I had never done such a difficult exam.",
+            alts: ["I had never [done|taken|sat|had] [such a difficult exam|such a hard exam|an exam that difficult|an exam so difficult|such a difficult test|such a hard test] [before|]."], x: "'Nunca había' → past perfect (had never + participio)." },
+          { es: "¿Qué hiciste el fin de semana pasado?", verb: "(do)", en: "What did you do last weekend?",
+            alts: ["What did you do [last weekend|at the weekend|on the weekend]?"], x: "Tiempo terminado → past simple: What did you do…?" }
+        ]
+      }
+    ];
+
+    /* ============================================================
+       PISTAS DE VOCABULARIO DEL NIVEL 3
+       Da las palabras de la frase, nunca la forma del verbo:
+       esa la tiene que pensar el alumno.
+       ============================================================ */
+    const GLOSS = {
+      "ayer": "yesterday", "anoche": "last night", "ayer por la tarde": "yesterday afternoon",
+      "el verano pasado": "last summer", "el fin de semana pasado": "last weekend",
+      "hace dos años": "two years ago", "a las cinco": "at five", "a las siete": "at seven",
+      "a las nueve de la noche": "at nine at night / at nine p.m.",
+      "cuando era pequeño": "when I was little", "todos los días": "every day", "todos los dias": "every day",
+      "hoy": "today", "esta semana": "this week", "desde": "since", "tres años": "three years",
+      "nunca": "never", "alguna vez": "ever", "ya": "already / yet", "antes": "before",
+      "antes de ese viaje": "before that trip", "antes del examen": "before the exam",
+      "hasta ese verano": "until that summer", "mientras": "while", "así que": "so", "asi que": "so",
+      "porque": "because", "cuando": "when", "después de": "after", "despues de": "after",
+      "el cine": "the cinema", "mis amigos": "my friends", "la fiesta": "the party",
+      "esa chaqueta": "that jacket", "mi abuela": "my grandmother / grandma",
+      "el examen": "the exam", "muy difícil": "very difficult", "muy dificil": "very difficult",
+      "tan difícil": "so / such a difficult", "tan dificil": "so / such a difficult",
+      "fútbol": "football", "futbol": "football", "tu madre": "your mother / mum",
+      "el autobús": "the bus", "el autobus": "the bus", "tarde": "late", "clase": "class",
+      "los deberes": "homework", "de casa": "home / the house", "en casa": "at home", "a casa": "home",
+      "mi hermano": "my brother", "mi hermana": "my sister", "la tele": "TV",
+      "el profesor": "the teacher", "mi profesora": "my teacher", "el parque": "the park",
+      "los niños": "the children", "los ninos": "the children", "hacía sol": "the sun + shine / it was sunny",
+      "hacia sol": "the sun + shine / it was sunny", "el jardín": "the garden", "el jardin": "the garden",
+      "abrigo": "a coat", "la película": "the film / movie", "la pelicula": "the film / movie",
+      "la nieve": "snow", "triste": "sad", "su perro": "his / her dog", "italia": "Italy",
+      "la estación": "the station", "la estacion": "the station", "el tren": "the train",
+      "el móvil": "mobile / phone", "el movil": "mobile / phone", "el libro": "the book",
+      "la tienda": "the shop", "londres": "London", "juan": "Juan", "inglés": "English", "ingles": "English",
+      "este pueblo": "this village / town", "madrid": "Madrid", "huesca": "Huesca", "ahora": "now",
+      "exámenes": "exams", "examenes": "exams", "mi padre": "my father / dad", "las gafas": "glasses",
+      "leer": "read", "más de": "more than", "mas de": "more than", "obras": "works",
+      "un avión": "a flight / a plane", "un avion": "a flight / a plane", "el teléfono": "the phone",
+      "el telefono": "the phone", "la policía": "the police", "la policia": "the police",
+      "los ladrones": "the thieves", "el ladrón": "the thief", "el ladron": "the thief",
+      "la pierna": "leg", "se fue la luz": "the lights + go out", "la pregunta": "the question",
+      "mucho": "a lot", "del colegio": "school", "un accidente": "an accident", "al trabajo": "to work",
+      "mi madre": "my mother / mum", "las llaves": "the keys", "en avión": "by plane", "en avion": "by plane",
+      "todos los exámenes": "all the exams", "todos los examenes": "all the exams",
+      "francia": "France", "mi mejor amigo": "my best friend", "la cena": "dinner", "aquí": "here", "aqui": "here",
+      "llevamos tres años": "for three years", "llevamos tres anos": "for three years"
+    };
+
+    /* ============================================================
+       SINÓNIMOS ACEPTADOS
+       Todas las variantes de una línea valen igual: el corrector las
+       reduce a la primera antes de comparar.
+       ============================================================ */
+    const SWAPS = [
+      ["mobile", "mobile phone", "phone", "cell phone", "cellphone", "smartphone", "telephone"],
+      ["mother", "mum", "mom", "mummy", "mommy"],
+      ["father", "dad", "daddy"],
+      ["grandmother", "grandma", "granny", "gran", "nan"],
+      ["grandfather", "grandad", "granddad", "grandpa"],
+      ["grandparents", "grandmother and grandfather", "grandpa and grandma", "grandma and grandpa"],
+      ["children", "kids"], ["child", "kid"],
+      ["film", "movie"],
+      ["cinema", "movies", "movie theater", "movie theatre", "pictures"],
+      ["television", "tv", "telly"],
+      ["football", "soccer"],
+      ["exam", "test"], ["exams", "tests"],
+      ["shop", "store"],
+      ["flat", "apartment"],
+      ["holiday", "holidays", "vacation"],
+      ["half an hour", "thirty minutes", "30 minutes"],
+      ["class", "the class", "lesson"],
+      ["homework", "the homework"],
+      ["dinner", "supper"],
+      ["seven", "7"], ["eight", "8"], ["nine", "9"], ["ten", "10"], ["five", "5"],
+      ["twice", "two times"],
+      ["two", "2"], ["three", "3"], ["six", "6"], ["twenty", "20"],
+      ["realised", "realized"], ["realise", "realize"], ["recognised", "recognized"],
+      ["travelled", "traveled"], ["travelling", "traveling"],
+      ["learnt", "learned"], ["burnt", "burned"], ["dreamt", "dreamed"], ["spelt", "spelled"],
+      ["favourite", "favorite"], ["neighbours", "neighbors"], ["neighbour", "neighbor"],
+      ["centre", "center"], ["theatre", "theater"], ["colour", "color"],
+      ["yoghurt", "yogurt"], ["cancelled", "canceled"],
+      ["pm", "in the evening", "at night"]
+    ];
+
+    /* Expresiones de tiempo: se extraen y se ordenan, de modo que da
+       igual ponerlas al principio o al final de la frase. */
+    const TIME_RX = /\b(yesterday (?:morning|afternoon|evening)|the day before yesterday|yesterday|last (?:night|week|weekend|month|year|summer|winter|spring|autumn|monday|tuesday|wednesday|thursday|friday|saturday|sunday|september)|(?:\d+|a|an|two|three|four|five|six|seven|eight|nine|ten|twenty) (?:seconds?|minutes?|hours?|days?|weeks?|months?|years?) ago|in \d{4}|every (?:day|morning|afternoon|evening|night|week|month|year|summer|winter)|at the weekend|on the weekend|at weekends|today|tonight|this (?:morning|afternoon|evening|week|month|year|summer|winter|term)|so far|at the moment|already|yet|ever|never|before|twice|two times|three times|all (?:day|night|morning|afternoon|evening)|for (?:\d+|a|an|two|three|four|five|six|seven|eight|nine|ten|twenty|half) [a-z ]*?(?:seconds?|minutes?|hours?|days?|weeks?|months?|years?)|since (?:\d{4}|monday|tuesday|wednesday|thursday|friday|saturday|sunday|september|last [a-z]+))\b/g;
+
+
+    /* ============================================================
+       LOS 3 NIVELES DE CADA MODULO
+       ============================================================ */
+    const PASS_THRESHOLD = 90;
+
+    const LEVELS = [
+      { n: 1, type: "mcq",       name: "Level 1 \u00b7 Choose the right option", tag: "L1", icon: "fa-list-check", pass: 90,
+        blurb: "Recognise the right form among four options.",
+        chip: "bg-sky-500/15 text-sky-300 border-sky-500/40",
+        how: [
+          "Read the sentence and choose <strong>one of the four options</strong>. The order changes every time, so do not learn the position.",
+          "Look at the <strong>time expressions</strong> (yesterday, ago, while, already, by the time, since\u2026): they almost always tell you which tense you need.",
+          "After answering you will see <strong>why</strong> that one is right and the others are not.",
+          "You need <strong>90%</strong> to pass this level."
+        ] },
+      { n: 2, type: "gap",       name: "Level 2 \u00b7 Fill in the gap",  tag: "L2", icon: "fa-pen-to-square", pass: 80,
+        blurb: "Now you write the verb form inside the sentence.",
+        chip: "bg-amber-500/15 text-amber-300 border-amber-500/40",
+        how: [
+          "Write <strong>only the missing verb</strong>. The infinitive is <strong>in brackets</strong>: <span class=\"font-mono text-amber-400\">(go)</span>.",
+          "If it says <span class=\"font-mono text-amber-400\">(not / go)</span>, write the <strong>whole negative</strong>: <em>didn\u2019t go</em>. If it says <span class=\"font-mono text-amber-400\">(already / leave)</span>, write both words in the right place: <em>had already left</em>.",
+          "<strong>Contractions</strong> are accepted (didn\u2019t, wasn\u2019t, hadn\u2019t, I\u2019ve, I\u2019d\u2026) and <strong>capital letters do not matter</strong>.",
+          "You need <strong>80%</strong> to pass this level."
+        ] },
+      { n: 3, type: "translate", name: "Level 3 \u00b7 Spanish into English", tag: "L3", icon: "fa-language", pass: 80,
+        blurb: "Write the whole sentence in English. They are short sentences.",
+        chip: "bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/40",
+        how: [
+          "Write the <strong>whole sentence</strong> in English. They are short, exam-style sentences.",
+          "The verb you need is <strong>in brackets, in the infinitive</strong>. <strong>You decide the tense</strong>: that is what is being assessed.",
+          "The <strong class=\"text-amber-300\">\ud83d\udca1 Vocabulary</strong> button gives you the words of the sentence, but <strong>never</strong> the form of the verb.",
+          "<strong>Many translations are accepted</strong>: synonyms (phone / mobile, mum / mother, film / movie, exam / test\u2026), British and American spelling (travelled / traveled), contractions (I had / I\u2019d, did not / didn\u2019t) and every tense that is also correct in that sentence. Capital letters, commas and the full stop do not matter.",
+          "If the Spanish sentence has no subject (<em>no hizo</em>, <em>estaba triste</em>\u2026), both <strong>he</strong> and <strong>she</strong> are accepted.",
+          "The time expression can go at the beginning or at the end: both are right.",
+          "You need <strong>80%</strong> to pass this level."
+        ] }
+    ];
+
+    const TYPES = {
+      mcq:       { label: "Choose the right one", badge: "bg-sky-500/15 text-sky-300 border-sky-500/40",        icon: "fa-list-check" },
+      gap:       { label: "Fill the gap", badge: "bg-amber-500/15 text-amber-300 border-amber-500/40",       icon: "fa-pen-to-square" },
+      translate: { label: "Translation", badge: "bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/40", icon: "fa-language" }
+    };
+
+    /* Baraja las opciones para que la correcta no caiga siempre en el mismo sitio */
+    function shuffleOptions(opts) {
+      const arr = opts.map((text, i) => ({ text: text, correct: i === 0 }));
+      for (let k = arr.length - 1; k > 0; k--) {
+        const r = Math.floor(Math.random() * (k + 1));
+        const t = arr[k]; arr[k] = arr[r]; arr[r] = t;
+      }
+      return arr;
+    }
+
+    /* "[a|b|c]" dentro de una respuesta = vale cualquiera de las opciones;
+       "[a|]" = palabra opcional. Se generan todas las combinaciones. */
+    function expandAlts(str) {
+      const m = /\[([^\[\]]*)\]/.exec(str);
+      if (!m) return [str.replace(/\s+/g, " ").replace(/\s+([,.?!])/g, "$1").trim()];
+      const head = str.slice(0, m.index), tail = str.slice(m.index + m[0].length);
+      return m[1].split("|").reduce((acc, opt) => acc.concat(expandAlts(head + opt + tail)), []);
+    }
+    function expandAnswers(list) {
+      const seen = new Set(), out = [];
+      list.forEach(a => expandAlts(a).forEach(v => {
+        const k = v.toLowerCase();
+        if (!seen.has(k)) { seen.add(k); out.push(v); }
+      }));
+      return out;
+    }
+
+    const MODULES = [];
+    LEVELS.forEach(lv => {
+      MODULE_DEFS.forEach((def, mi) => {
+        let questions;
+        if (lv.type === "mcq") {
+          questions = def.mcq.map((row, i) => ({
+            qid: `${def.id}_l1_${i}`, type: "mcq", text: row.q,
+            options: row.options, answers: [row.options[0]], x: row.x
+          }));
+        } else if (lv.type === "gap") {
+          questions = def.gaps.map((row, i) => ({
+            qid: `${def.id}_l2_${i}`, type: "gap", text: row.text, hint: row.hint,
+            answers: row.answers, x: row.x
+          }));
+        } else {
+          questions = def.tr.map((row, i) => ({
+            qid: `${def.id}_l3_${i}`, type: "translate", prompt: row.es, verbHint: row.verb,
+            answers: expandAnswers([row.en].concat(row.alts || [])), x: row.x
+          }));
+        }
+        MODULES.push({
+          id: `${def.id}_l${lv.n}`, moduleId: def.id, moduleIndex: mi, level: lv.n,
+          type: lv.type, icon: def.icon, levelIcon: lv.icon, levelName: lv.name,
+          chip: lv.chip, how: lv.how, levelTag: lv.tag,
+          title: `${def.title} \u00b7 ${lv.name.split(" \u00b7 ")[1]}`,
+          moduleTitle: def.title, short: `${def.short} ${lv.tag}`,
+          theory: def.theory, moduleDesc: def.desc,
+          pass: lv.pass, questions: questions, size: questions.length,
+          desc: lv.type === "mcq"
+            ? `${def.mcq.length} questions \u00b7 choose the right form among four options.`
+            : (lv.type === "gap"
+              ? `${def.gaps.length} sentences \u00b7 write the missing verb.`
+              : `${def.tr.length} sentences \u00b7 write them in English. You decide the tense.`)
+        });
+      });
+    });
+
+    function passMark(mod) { return (mod && mod.pass) || PASS_THRESHOLD; }
+    function passMarkOf(modId) { return passMark(MODULES.find(m => m.id === modId)); }
+    function modulesOfLevel(n) { return MODULES.filter(m => m.level === n); }
+
+    /* ============================================================
+       CHECKING
+       ============================================================ */
+    function normalize(str) {
+      return (str || "").toString()
+        .replace(/[\u2018\u2019\u02bc`\u00b4]/g, "'")
+        .trim()
+        .toLowerCase()
+        .replace(/[.,;!?]+$/g, "")
+        .replace(/\s+/g, " ");
+    }
+
+    // Para las traducciones: ignora comas, puntos y apostrofes (I've = Ive = I have? no, solo el apostrofe)
+    function normalizeLoose(str) {
+      return normalize(str).replace(/[.,;:!?"']/g, "").replace(/\s+/g, " ").trim();
+    }
+
+    function gradeMcq(userValue, q) {
+      return normalize(userValue) === normalize(q.answers[0]);
+    }
+
+    /* Las contracciones se expanden en los dos lados, as\u00ed que da igual que el
+       alumno escriba "haven't seen" o "have not seen". */
+    function expandGapForms(s) {
+      return s
+        .replace(/\bcan't\b/g, "can not").replace(/\bcannot\b/g, "can not")
+        .replace(/\bwon't\b/g, "will not")
+        .replace(/n't\b/g, " not")
+        .replace(/'m\b/g, " am").replace(/'re\b/g, " are")
+        .replace(/'ve\b/g, " have").replace(/'ll\b/g, " will").replace(/'d\b/g, " had")
+        .replace(/\s+/g, " ").trim();
+    }
+
+    /* Una frase puede tener uno o varios huecos.
+       answers = ["does"]                -> un hueco
+       answers = [["does"], ["speak"]]   -> un hueco por cada ___          */
+    function gapSets(q) {
+      return Array.isArray(q.answers[0]) ? q.answers : [q.answers];
+    }
+    function gapCount(text) { return (text.match(/_{3,}/g) || []).length; }
+    function fillGaps(text, valores) {
+      let i = 0;
+      return text.replace(/_{3,}/g, () => {
+        const v = valores[i++];
+        return (v === undefined || v === "") ? "______" : v;
+      });
+    }
+    function modelGapValues(q) { return gapSets(q).map(set => set[0]); }
+    function mayuscula(t) { return t ? t.charAt(0).toUpperCase() + t.slice(1) : t; }
+
+    function gradeOneGap(userValue, lista) {
+      const user = normalize(userValue);
+      if (!user) return false;
+      const userExp = expandGapForms(user);
+      return lista.some(ans => {
+        const a = normalize(ans);
+        return a === user || expandGapForms(a) === userExp;
+      });
+    }
+
+    function gradeGapValues(values, q) {
+      const sets = gapSets(q);
+      const partes = sets.map((set, i) => gradeOneGap(values[i], set));
+      return { ok: partes.every(Boolean), partes: partes };
+    }
+
+    function gradeGap(userValue, q) {          // compatibilidad: un solo hueco
+      return gradeGapValues([userValue], q).ok;
+    }
+
+    // Todas las alternativas de una linea de SWAPS se reducen a la primera,
+    // asi que da igual cual escriba el alumno.
+    const SWAP_RULES = (function () {
+      const list = [];
+      SWAPS.forEach(g => { g.slice(1).forEach(alt => list.push({ alt: alt, to: g[0] })); });
+      list.sort((a, b) => b.alt.length - a.alt.length);
+      return list.map(r => ({
+        re: new RegExp("\\b" + r.alt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "g"),
+        to: r.to
+      }));
+    })();
+
+    /* Las contracciones se expanden ANTES de quitar el ap\u00f3strofo, para que
+       "I've lost" y "I have lost" acaben siendo la misma frase. */
+    function expandTrContractions(s) {
+      return s
+        .replace(/\bcan't\b/g, "can not").replace(/\bcannot\b/g, "can not")
+        .replace(/\bwon't\b/g, "will not")
+        .replace(/n't\b/g, " not")
+        .replace(/'m\b/g, " am").replace(/'re\b/g, " are")
+        .replace(/'ve\b/g, " have").replace(/'ll\b/g, " will").replace(/'d\b/g, " had")
+        .replace(/\s+/g, " ").trim();
+    }
+
+    /* "'s" puede ser IS, HAS o un posesivo: se prueban las tres lecturas. */
+    function sReadings(s) {
+      if (!/\w's\b/.test(s)) return [s];
+      return [
+        s.replace(/(\w)'s\b/g, "$1 is"),
+        s.replace(/(\w)'s\b/g, "$1 has"),
+        s.replace(/(\w)'s\b/g, "$1s")
+      ];
+    }
+
+    function canonCore(str) {
+      let out = normalizeLoose(str).replace(/[\u2013\u2014]/g, "-");
+      out = out.replace(/\boclock\b/g, " ");        // "at eight" = "at eight o'clock"
+      SWAP_RULES.forEach(r => { out = out.replace(r.re, r.to); });
+      const times = [];
+      out = out.replace(TIME_RX, m => { times.push(m.trim()); return " "; });
+      return (out + " " + times.sort().join(" ")).replace(/\s+/g, " ").trim();
+    }
+
+    function canonVariants(str) {
+      return sReadings(expandTrContractions(normalize(str))).map(canonCore);
+    }
+
+    function canonTranslation(str) { return canonCore(str); }
+
+    // Palabras de pegamento: no cuentan al comparar. Asi valen igual
+    // "lent Sara my bike" y "lent my bike to Sara", o que falte un articulo.
+    // "for" y "since" NO estan aqui a proposito: hay que escribirlos bien.
+    const GLUE = ["a", "an", "the", "to", "of", "at", "in", "on", "from", "with",
+                  "into", "onto", "and", "that", "up", "out", "down", "off", "away", "back", "as"];
+
+    function contentBag(canon) {
+      return canon.split(" ").filter(w => w && GLUE.indexOf(w) < 0).sort().join(" ");
+    }
+
+    function gradeTranslation(userValue, q) {
+      if (!normalizeLoose(userValue)) return false;
+      const mias = canonVariants(userValue);
+      const suyas = q.answers.reduce((acc, a) => acc.concat(canonVariants(a)), []);
+      if (mias.some(u => suyas.indexOf(u) >= 0)) return true;
+      const bolsasSuyas = suyas.map(contentBag);
+      return mias.map(contentBag).some(u => bolsasSuyas.indexOf(u) >= 0);
+    }
+
+    /* ---------- pista de vocabulario del nivel 3 ---------- */
+    function stripAccents(t) { return (t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+    const GLOSS_KEYS = Object.keys(GLOSS).sort((a, b) => b.length - a.length);
+
+    function vocabHints(esText, max) {
+      const low = stripAccents((esText || "").toLowerCase());
+      const taken = [], found = [];
+      GLOSS_KEYS.forEach(k => {
+        const kk = stripAccents(k.toLowerCase());
+        const pos = low.indexOf(kk);
+        if (pos < 0) return;
+        const before = pos === 0 ? " " : low[pos - 1];
+        const after = (pos + kk.length >= low.length) ? " " : low[pos + kk.length];
+        if (/[a-z0-9]/.test(before) || /[a-z0-9]/.test(after)) return;
+        if (taken.some(t => pos < t[1] && pos + kk.length > t[0])) return;
+        taken.push([pos, pos + kk.length]);
+        found.push({ pos: pos, es: k, en: GLOSS[k] });
+      });
+      found.sort((a, b) => a.pos - b.pos);
+      return found.slice(0, max || 7);
+    }
+
+    /* ============================================================
+       HELPERS
+       ============================================================ */
+    let currentUser = null;
+    let currentTeacherLoggedIn = null;
+    let currentModuleId = null;
+    let currentQuestions = [];
+    let currentQuestionIdx = 0;
+    let currentScore = 0;
+    let quizTimerInterval = null;
+    let quizSeconds = 0;
+    let answered = false;
+    let attemptLog = [];
+
+    function escapeHtml(str) {
+      return (str || "").toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    function currentModule() { return MODULES.find(m => m.id === currentModuleId); }
+    function fullName() { return currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : ""; }
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+    function storageGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    function storageSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    function storageDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+    function progressKey(modId) { return `englishpro_past_progress_${userScopeKey()}_${modId}`; }
+
+    /* ---------- class codes ---------- */
+    function normalizeCode(c) { return (c || "").toString().trim().toUpperCase().replace(/\s+/g, ""); }
+    function isSchoolAccount(mail) {
+      const dom = (window.SCHOOL_DOMAIN || "").toString().trim().toLowerCase();
+      if (!dom) return true;
+      return (mail || "").toString().trim().toLowerCase().endsWith("@" + dom);
+    }
+    function findTeacher(mail) {
+      const m = (mail || "").toString().trim().toLowerCase();
+      if (!m) return null;
+      return (window.TEACHERS || []).find(t => (t.email || "").toString().trim().toLowerCase() === m) || null;
+    }
+    function userScopeKey() {
+      if (!currentUser) return "";
+      const who = (currentUser.uid || currentUser.email || fullName() || "anon").toLowerCase();
+      return `${currentUser.guest ? "GUEST" : normalizeCode(currentUser.classCode)}_${who}`;
+    }
+    /* Cada alumno cuelga de su propia cuenta:
+       NODO / CODIGO DE CLASE / uid del alumno / { profile, attempts } */
+    function studentRef(code, uid) { return db.ref(`${RESULTS_NODE}/${normalizeCode(code)}/${uid}`); }
+    function myStudentRef() { return studentRef(currentUser.classCode, currentUser.uid); }
+    function myAttemptsRef() { return myStudentRef().child("attempts"); }
+
+    function saveMyProfile(propagarError) {
+      if (!currentUser || currentUser.guest || !currentUser.uid) return Promise.resolve();
+      const p = myStudentRef().child("profile").set({
+        firstName: currentUser.firstName, lastName: currentUser.lastName,
+        grade: currentUser.grade, email: currentUser.email, updated: Date.now()
+      });
+      return propagarError ? p : p.catch(err => console.error("No se pudo guardar el perfil:", err));
+    }
+
+    /* ---------- local copy of the results (guest mode / no connection) ---------- */
+    function localResultsKey() { return `englishpro_past_results_${userScopeKey()}`; }
+    function localResults() {
+      try { return JSON.parse(storageGet(localResultsKey()) || "[]"); } catch (e) { return []; }
+    }
+    function saveResultLocally(record) {
+      const light = Object.assign({}, record);
+      delete light.answers;                       // keep localStorage small
+      const all = localResults().concat([light]).slice(-60);
+      storageSet(localResultsKey(), JSON.stringify(all));
+    }
+    function fetchMyRecords(cb) {
+      if (!currentUser) { cb([]); return; }
+      if (currentUser.guest || !currentUser.uid) { cb(localResults()); return; }
+      myAttemptsRef().once("value", (snapshot) => {
+        const out = [];
+        snapshot.forEach(childSnap => { if (childSnap.val()) out.push(childSnap.val()); });
+        if (out.length) storageSet(localResultsKey(), JSON.stringify(out.map(r => { const x = Object.assign({}, r); delete x.answers; return x; }).slice(-60)));
+        cb(out.length ? out : localResults());
+      }, (err) => { console.error("Could not load previous results:", err); cb(localResults()); });
+    }
+
+    function questionBodyHtml(q) {
+      const inp = 'autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+      if (q.type === "mcq") {
+        const opts = q.shuffled || (q.shuffled = shuffleOptions(q.options));
+        return `
+          <p class="text-xs md:text-sm font-black uppercase tracking-widest text-slate-400 mb-2">Choose the right option</p>
+          <p class="text-2xl md:text-4xl font-extrabold text-white mb-6 leading-snug">${escapeHtml(q.text)}</p>
+          <div id="mcqOptions" class="grid grid-cols-1 gap-3">
+            ${opts.map((o, i) => `
+              <button type="button" class="mcq-opt text-left w-full px-5 py-4 rounded-2xl border-2 border-slate-700 bg-slate-950 hover:border-sky-500 text-lg md:text-2xl font-bold text-slate-100 transition"
+                      data-value="${escapeHtml(o.text)}" onclick="pickOption(this)">
+                <span class="inline-block w-8 h-8 mr-3 rounded-lg bg-slate-800 text-sky-300 text-base font-black text-center leading-8">${String.fromCharCode(65 + i)}</span>${escapeHtml(o.text)}
+              </button>`).join("")}
+          </div>
+          <input type="hidden" id="ans_0" class="quiz-input" value="">`;
+      }
+      if (q.type === "gap") {
+        const sets = gapSets(q);
+        const trozos = q.text.split(/_{3,}/);
+        let html = "";
+        trozos.forEach((t, i) => {
+          html += escapeHtml(t);
+          if (i >= trozos.length - 1) return;
+          const set = sets[i] || sets[0] || [""];
+          const width = Math.max(7, Math.max.apply(null, set.map(a => a.length)) + 3);
+          html += `<input type="text" id="ans_${i}" class="quiz-input gap-input text-xl md:text-3xl" style="width:${width}ch" ${inp}>`;
+        });
+        return `<p class="text-2xl md:text-4xl font-extrabold text-white leading-relaxed">${html} <span class="text-amber-400 font-mono text-xl md:text-2xl">(${escapeHtml(q.hint)})</span></p>`;
+      }
+      return `
+        <p class="text-xs md:text-sm font-black uppercase tracking-widest text-slate-400 mb-2">Translate into English</p>
+        <p class="text-2xl md:text-4xl font-extrabold text-white mb-4" lang="es">${escapeHtml(q.prompt)}
+          <span class="text-amber-400 font-mono text-xl md:text-2xl whitespace-nowrap">${escapeHtml(q.verbHint || "")}</span></p>
+        <input type="text" id="ans_0" class="quiz-input gap-input wide text-lg md:text-2xl" placeholder="Write the whole sentence in English" ${inp}>`;
+    }
+
+    function questionInputs() {
+      return Array.prototype.slice.call(document.querySelectorAll(".quiz-input")).filter(i => i.type !== "hidden");
+    }
+
+    /* Nivel 1: marcar una opci\u00f3n (todav\u00eda no corrige; corrige el bot\u00f3n Comprobar) */
+    function pickOption(btn) {
+      if (answered) return;
+      document.querySelectorAll(".mcq-opt").forEach(b => {
+        b.classList.remove("border-sky-400", "bg-sky-950/40");
+        b.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("border-sky-400", "bg-sky-950/40");
+      btn.setAttribute("aria-pressed", "true");
+      const hidden = document.getElementById("ans_0");
+      if (hidden) hidden.value = btn.dataset.value;
+      const check = document.getElementById("checkAnswerBtn");
+      if (check) check.disabled = false;
+    }
+
+    function questionPromptText(q) {
+      if (q.type === "gap") return `${q.text.replace(/_{3,}/g, "______")} (${q.hint})`;
+      if (q.type === "mcq") return q.text;
+      return q.prompt;
+    }
+
+    function modelAnswer(q) {
+      if (q.type === "gap") return mayuscula(fillGaps(q.text, modelGapValues(q)));
+      return q.answers.join("  |  ");
+    }
+
+    function toggleQuizHint() {
+      const box = document.getElementById("hintBox");
+      if (box) box.classList.toggle("hidden");
+    }
+
+    function studentStrip() {
+      if (!currentUser) return "";
+      return `
+        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3 text-left">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+            <div>
+              <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Name</p>
+              <p class="text-lg md:text-xl font-black text-white leading-tight">${escapeHtml(currentUser.firstName)}</p>
+            </div>
+            <div>
+              <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Surname(s)</p>
+              <p class="text-lg md:text-xl font-black text-emerald-300 leading-tight">${escapeHtml(currentUser.lastName)}</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-sm font-bold">
+            <span class="px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"><i class="fa-solid fa-users"></i> Group: ${escapeHtml(currentUser.grade)}</span>
+            ${currentUser.guest
+              ? `<span class="px-3 py-1 rounded-lg bg-slate-700/40 text-slate-300 border border-slate-600"><i class="fa-solid fa-user-clock"></i> Guest · not saved</span>`
+              : `<span class="px-3 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30"><i class="fa-solid fa-key"></i> Code: ${escapeHtml(currentUser.classCode)}</span>`}
+          </div>
+        </div>`;
+    }
+
+    /* ============================================================
+       THEORY PAGE
+       ============================================================ */
+    function buildLesson(mod) {
+      const ejemplos = {
+        mcq: `<p class="text-base md:text-xl text-slate-300">She ______ to school yesterday.</p>
+              <p class="mt-2 text-base md:text-xl text-slate-200">You choose: <strong class="text-emerald-300">went</strong> (y no <em>go</em>, <em>was going</em> ni <em>has gone</em>).</p>`,
+        gap: `<p class="text-base md:text-xl text-slate-300">She ______ to school yesterday. <span class="font-mono text-amber-400">(go)</span></p>
+              <p class="mt-2 text-base md:text-xl text-slate-200">You write only: <strong class="text-emerald-300">went</strong></p>`,
+        translate: `<p class="text-base md:text-xl text-slate-300" lang="es">Ayer fui al colegio. <span class="font-mono text-amber-400">(go)</span></p>
+              <p class="mt-2 text-base md:text-xl text-slate-200">You write: <strong class="text-emerald-300">I went to school yesterday.</strong></p>
+              <p class="mt-2 text-base md:text-lg text-slate-400">Nobody tells you it is past simple: that is your decision.</p>`
+      };
+      return `
+        ${mod.theory}
+        <div class="bg-slate-950 p-5 md:p-7 rounded-3xl border-2 border-slate-800 mt-8">
+          <h3 class="text-xl md:text-2xl font-black text-white mb-3">
+            <i class="fa-solid ${mod.levelIcon} text-emerald-400 mr-2"></i>${mod.levelName}</h3>
+          <ul class="list-disc list-inside space-y-2 text-base md:text-xl text-slate-300">
+            ${mod.how.map(li => `<li>${li}</li>`).join("")}
+          </ul>
+          <div class="mt-5 bg-slate-900/80 border border-slate-700 rounded-2xl p-4 md:p-5">
+            <p class="text-xs md:text-sm font-black uppercase tracking-widest text-slate-500 mb-2">Example</p>
+            ${ejemplos[mod.type]}
+          </div>
+          <p class="mt-5 text-base md:text-xl text-slate-300">
+            <i class="fa-solid fa-flag-checkered text-amber-400"></i>
+            ${mod.size} exercises \u00b7 you need <strong class="text-emerald-300">${mod.pass}%</strong> to pass this level.</p>
+        </div>`;
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(`Error: ${err.message}`));
+      } else if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+
+    let currentAuthUser = null;
+
+    function showAuthError(msg) {
+      const el = document.getElementById("authError");
+      if (!el) return;
+      if (!msg) { el.classList.add("hidden"); el.innerText = ""; return; }
+      el.classList.remove("hidden"); el.innerText = msg;
+    }
+
+    function signInWithGoogle() {
+      showAuthError("");
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      auth.signInWithPopup(provider).catch(err => {
+        if (err && err.code === "auth/popup-blocked") {
+          auth.signInWithRedirect(provider);
+          return;
+        }
+        if (err && (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request")) return;
+        console.error(err);
+        showAuthError("\u26a0\ufe0f Could not sign in (" + ((err && err.code) || "error") + "). Try again or ask your teacher.");
+      });
+    }
+
+    function signOutNow() {
+      storageDel("englishpro_past_user");
+      currentUser = null;
+      auth.signOut().catch(err => console.error(err));
+    }
+
+    function splitDisplayName(name) {
+      const parts = (name || "").toString().trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return { first: "", last: "" };
+      return { first: parts.shift(), last: parts.join(" ") };
+    }
+
+    let guestUI = false;
+
+    function startGuestForm() {
+      if (!window.ALLOW_GUEST_MODE) return;
+      guestUI = true;
+      showCodeError(""); showAuthError("");
+      document.getElementById("authGate").classList.add("hidden");
+      document.getElementById("regFields").classList.remove("hidden");
+      document.getElementById("accountBox").classList.add("hidden");
+      document.getElementById("codeBox").classList.add("hidden");
+      // si sigue siendo obligatoria y esta oculta, el navegador no deja enviar
+      document.getElementById("regClassCode").removeAttribute("required");
+      document.getElementById("guestNotice").classList.remove("hidden");
+      document.getElementById("guestBox").classList.add("hidden");
+      document.getElementById("regSubmitBtn").innerHTML = `Start practising <i class="fa-solid fa-play"></i>`;
+      const fn = document.getElementById("regFirstName");
+      if (fn) fn.focus();
+      window.scrollTo(0, 0);
+    }
+
+    function cancelGuestForm() {
+      guestUI = false;
+      showCodeError("");
+      document.getElementById("guestNotice").classList.add("hidden");
+      document.getElementById("accountBox").classList.remove("hidden");
+      document.getElementById("codeBox").classList.remove("hidden");
+      document.getElementById("regClassCode").setAttribute("required", "required");
+      document.getElementById("regSubmitBtn").innerHTML = `Enter the Academy <i class="fa-solid fa-arrow-right"></i>`;
+      if (window.ALLOW_GUEST_MODE) document.getElementById("guestBox").classList.remove("hidden");
+      paintAuthState();
+    }
+
+    function paintAuthState() {
+      if (guestUI) return;
+      const gate = document.getElementById("authGate");
+      const fields = document.getElementById("regFields");
+      if (!gate || !fields) return;
+      if (currentAuthUser) {
+        gate.classList.add("hidden");
+        fields.classList.remove("hidden");
+        const shown = document.getElementById("regEmailShown");
+        if (shown) shown.innerText = currentAuthUser.email || "";
+        const n = splitDisplayName(currentAuthUser.displayName);
+        const fn = document.getElementById("regFirstName"), ln = document.getElementById("regLastName");
+        if (fn && !fn.value) fn.value = n.first;
+        if (ln && !ln.value) ln.value = n.last;
+      } else {
+        gate.classList.remove("hidden");
+        fields.classList.add("hidden");
+      }
+    }
+
+    function savedProfile() {
+      try { return JSON.parse(storageGet("englishpro_past_user") || "null"); } catch (e) { return null; }
+    }
+
+    function initApp() {
+      const guestBox = document.getElementById("guestBox");
+      if (guestBox && window.ALLOW_GUEST_MODE) guestBox.classList.remove("hidden");
+
+      const hint = document.getElementById("regCodeHint");
+      if (hint && window.CODE_HINT) {
+        hint.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${escapeHtml(window.CODE_HINT)}`;
+        hint.classList.remove("hidden");
+      }
+
+      auth.onAuthStateChanged((user) => {
+        currentAuthUser = user || null;
+        paintAuthState();
+
+        const prof = savedProfile();
+        if (prof && prof.guest) {                       // invitado: sigue en local
+          currentUser = prof;
+          updateUserHeader(); showView("viewDashboard"); renderModules();
+          return;
+        }
+        if (user && prof && prof.uid === user.uid && prof.classCode) {
+          currentUser = prof;                            // vuelve el alumno de siempre
+          currentUser.email = user.email || prof.email;
+          updateUserHeader(); showView("viewDashboard"); renderModules();
+          return;
+        }
+        currentUser = null;
+        document.getElementById("userInfoHeader").classList.add("hidden");
+        showView("viewRegistration");
+      });
+    }
+
+    function readRegistrationForm() {
+      return {
+        firstName: document.getElementById("regFirstName").value.trim(),
+        lastName: document.getElementById("regLastName").value.trim(),
+        email: currentAuthUser ? (currentAuthUser.email || "") : "",
+        uid: currentAuthUser ? currentAuthUser.uid : null,
+        grade: document.getElementById("regGrade").value
+      };
+    }
+
+    function showCodeError(msg) {
+      const el = document.getElementById("regCodeError");
+      if (!el) return;
+      if (!msg) { el.classList.add("hidden"); el.innerText = ""; return; }
+      el.classList.remove("hidden");
+      el.innerText = msg;
+    }
+
+    function startSession(user) {
+      currentUser = user;
+      storageSet("englishpro_past_user", JSON.stringify(currentUser));
+      showCodeError("");
+      updateUserHeader();
+      showView("viewDashboard");
+      renderModules();
+      window.scrollTo(0, 0);
+    }
+
+    function handleRegistration(e) {
+      e.preventDefault();
+      if (guestUI) { enterGuestMode(); return; }
+      if (!currentAuthUser) { showAuthError("\u26a0\ufe0f Sign in with Google first."); return; }
+      if (!isSchoolAccount(currentAuthUser.email)) {
+        showCodeError("\u26a0\ufe0f This app only saves the work of @" + window.SCHOOL_DOMAIN +
+                      " accounts. You can still practise with the button below.");
+        return;
+      }
+      const code = normalizeCode(document.getElementById("regClassCode").value);
+      if (!code) { showCodeError("\u26a0\ufe0f Write your class code."); return; }
+
+      const user = readRegistrationForm();
+      user.guest = false;
+      user.classCode = code;
+
+      const btn = e.target.querySelector("button[type=submit]");
+      if (btn) { btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Checking...`; }
+      showCodeError("");
+
+      // Solo Firebase sabe que codigos valen: si el codigo es bueno, el perfil
+      // se guarda; si no, la propia base de datos rechaza la escritura.
+      currentUser = user;
+      saveMyProfile(true).then(() => {
+        if (btn) { btn.disabled = false; btn.innerHTML = `Enter the Academy <i class="fa-solid fa-arrow-right"></i>`; }
+        startSession(user);
+        fetchMyRecords(() => renderModules());
+      }).catch(err => {
+        currentUser = null;
+        if (btn) { btn.disabled = false; btn.innerHTML = `Enter the Academy <i class="fa-solid fa-arrow-right"></i>`; }
+        const permiso = err && (err.code === "PERMISSION_DENIED" || /permission/i.test(err.message || ""));
+        showCodeError(permiso
+          ? "\u26a0\ufe0f Wrong class code. Ask your own teacher for it" +
+            (window.ALLOW_GUEST_MODE ? ", or use the button below to practise without saving." : ".")
+          : "\u26a0\ufe0f Could not connect (" + ((err && err.message) || "error") + "). Check your connection.");
+        document.getElementById("regClassCode").focus();
+      });
+    }
+
+    function enterGuestMode() {
+      if (!window.ALLOW_GUEST_MODE) return;
+      const user = readRegistrationForm();
+      user.uid = null;
+      user.email = "";
+      if (!user.firstName || !user.lastName || !user.grade) {
+        showCodeError("\u26a0\ufe0f Write your name, your surname(s) and choose your group to start.");
+        const fn = document.getElementById("regFirstName");
+        if (fn && !user.firstName) fn.focus();
+        return;
+      }
+      guestUI = false;
+      user.guest = true;
+      user.classCode = "";
+      startSession(user);
+    }
+
+    function logout() {
+      if (!confirm("Log out?")) return;
+      storageDel("englishpro_past_user");
+      const eraGuest = currentUser && currentUser.guest;
+      currentUser = null;
+      document.getElementById("userInfoHeader").classList.add("hidden");
+      document.getElementById("regForm").reset();
+      showCodeError("");
+      if (eraGuest) { cancelGuestForm(); showView("viewRegistration"); }
+      else { auth.signOut().catch(err => console.error(err)); }
+    }
+
+    function updateUserHeader() {
+      if (!currentUser) return;
+      const el = document.getElementById("userInfoHeader");
+      el.classList.remove("hidden");
+      el.innerHTML = `
+        <span class="font-extrabold text-white">${escapeHtml(fullName())}</span><br>
+        <span class="text-emerald-400 font-bold text-xs"><i class="fa-solid fa-users"></i> Group: ${escapeHtml(currentUser.grade)}</span>
+        ${currentUser.guest
+          ? `<span class="text-slate-400 font-bold text-xs"> · <i class="fa-solid fa-user-clock"></i> Guest</span>`
+          : `<span class="text-amber-400 font-bold text-xs"> · <i class="fa-solid fa-key"></i> ${escapeHtml(currentUser.classCode)}</span>`}
+        · <button onclick="logout()" class="text-xs text-slate-400 hover:text-white underline">Log out</button>`;
+      document.getElementById("welcomeUserText").innerText = `Hi, ${currentUser.firstName}! 👋`;
+    }
+
+    function showView(viewId) {
+      ["viewRegistration", "viewDashboard", "viewLesson", "viewQuiz", "viewResults", "viewGlobalReport", "viewTeacher"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+      });
+      document.getElementById(viewId).classList.remove("hidden");
+    }
+
+    function goHome() {
+      if (quizTimerInterval) clearInterval(quizTimerInterval);
+      if (currentUser) {
+        showView("viewDashboard");
+        renderModules();
+      } else {
+        showView("viewRegistration");
+      }
+    }
+
+    function buildModuleCard(mod, bestScore) {
+      let badge = `<span class="text-sm bg-slate-800 text-slate-400 px-4 py-2 rounded-xl font-bold">Pending</span>`;
+      const saved = storageGet(progressKey(mod.id));
+      if (saved) {
+        try {
+          const p = JSON.parse(saved);
+          badge = `<span class="text-sm bg-sky-500/20 text-sky-300 border border-sky-500/40 px-4 py-2 rounded-xl font-black">\u23f8 ${p.idx}/${mod.size}</span>`;
+        } catch (e) {}
+      }
+      if (bestScore !== null && bestScore !== undefined) {
+        badge = (bestScore >= passMark(mod))
+          ? `<span class="text-sm bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-4 py-2 rounded-xl font-black">\u2705 ${bestScore}%</span>`
+          : `<span class="text-sm bg-rose-500/20 text-rose-400 border border-rose-500/40 px-4 py-2 rounded-xl font-black">${bestScore}% \u00b7 again</span>`;
+      }
+      const card = document.createElement("div");
+      card.className = "bg-slate-900 border-2 border-slate-800 hover:border-emerald-500/60 p-6 md:p-7 rounded-3xl transition cursor-pointer flex flex-col justify-between neon-border";
+      card.onclick = () => openLesson(mod.id);
+      const preview = mod.moduleDesc || "";
+      card.innerHTML = `
+        <div>
+          <div class="flex justify-between items-start mb-4 gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-xl font-black border border-emerald-500/30 shrink-0">
+              <i class="fa-solid ${mod.icon}"></i>
+            </div>
+            ${badge}
+          </div>
+          <h3 class="text-xl md:text-2xl font-black text-white mb-2">${mod.moduleTitle}</h3>
+          <p class="text-sm md:text-base text-slate-300 leading-relaxed mb-2">${mod.desc}</p>
+          <p class="text-xs text-slate-500 mb-4 italic">${preview}\u2026</p>
+          <div class="flex flex-wrap gap-2 mb-5 text-xs font-black">
+            <span class="px-3 py-1 rounded-lg border ${mod.chip}">${mod.levelTag} \u00b7 ${TYPES[mod.type].label}</span>
+            <span class="px-3 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">${mod.size} questions</span>
+            <span class="px-3 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">Pass: ${passMark(mod)}%</span>
+          </div>
+        </div>
+        <div class="text-sm md:text-base font-black text-emerald-400 flex items-center gap-2">
+          Study &amp; start <i class="fa-solid fa-arrow-right"></i>
+        </div>`;
+      return card;
+    }
+
+    function paintModulesGrid(scoresByModule) {
+      const grid = document.getElementById("modulesGrid");
+      grid.innerHTML = "";
+      LEVELS.forEach(lv => {
+        const mods = modulesOfLevel(lv.n);
+        const passed = mods.filter(m => {
+          const sc = scoresByModule ? scoresByModule[m.id] : null;
+          return sc !== null && sc !== undefined && sc >= passMark(m);
+        }).length;
+        const section = document.createElement("section");
+        section.className = "space-y-5";
+        section.innerHTML = `
+          <div class="flex flex-wrap items-end justify-between gap-3 border-b-2 border-slate-800 pb-3">
+            <div>
+              <h3 class="text-2xl md:text-3xl font-black text-white flex items-center gap-3">
+                <span class="w-11 h-11 rounded-2xl border flex items-center justify-center ${lv.chip}"><i class="fa-solid ${lv.icon}"></i></span>
+                ${lv.name}
+              </h3>
+              <p class="text-sm md:text-base text-slate-400 mt-2">${lv.blurb}</p>
+            </div>
+            <span class="text-sm font-black px-4 py-2 rounded-xl ${passed === mods.length ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/40" : "bg-slate-800 text-slate-300 border border-slate-700"}">${passed} / ${mods.length} passed</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>`;
+        const inner = section.querySelector("div.grid");
+        mods.forEach(mod => {
+          const best = scoresByModule ? scoresByModule[mod.id] : null;
+          inner.appendChild(buildModuleCard(mod, best === undefined ? null : best));
+        });
+        grid.appendChild(section);
+      });
+    }
+
+    function renderModules() {
+      paintModulesGrid(null);
+      fetchMyRecords((scores) => {
+        const best = {};
+        MODULES.forEach(mod => {
+          const userScores = scores.filter(s => s && s.moduleId === mod.id);
+          best[mod.id] = userScores.length > 0 ? Math.max(...userScores.map(s => Number(s.score) || 0)) : null;
+        });
+        paintModulesGrid(best);
+      });
+    }
+
+    function openLesson(modId) {
+      currentModuleId = modId;
+      const mod = currentModule();
+      document.getElementById("lessonTopicCategory").innerText = mod.title;
+      document.getElementById("lessonContent").innerHTML = buildLesson(mod);
+      document.getElementById("howToList").innerHTML = mod.how.map(li => `<li>${li}</li>`).join("");
+      document.getElementById("startQuizBtn").innerHTML = `Start the ${mod.size} questions <i class="fa-solid fa-play"></i>`;
+      showView("viewLesson");
+      window.scrollTo(0, 0);
+    }
+
+    /* ---------- progress saved in the browser (so a closed tab is not lost) ---------- */
+    function saveProgress() {
+      const mod = currentModule();
+      storageSet(progressKey(mod.id), JSON.stringify({
+        order: currentQuestions.map(q => q.qid),
+        idx: currentQuestionIdx + (answered ? 1 : 0),
+        score: currentScore,
+        seconds: quizSeconds,
+        log: attemptLog
+      }));
+    }
+
+    function startCurrentQuiz(forceNew) {
+      const mod = currentModule();
+      const saved = forceNew ? null : storageGet(progressKey(mod.id));
+      let resumed = false;
+      if (saved) {
+        try {
+          const p = JSON.parse(saved);
+          if (p.idx > 0 && p.idx < mod.size &&
+              confirm(`You have an unfinished attempt (${p.idx} of ${mod.size} questions done).\n\nOK = continue where you stopped\nCancel = start again from the beginning`)) {
+            currentQuestions = p.order.map(id => mod.questions.find(q => q.qid === id)).filter(Boolean);
+            currentQuestionIdx = p.idx;
+            currentScore = p.score;
+            quizSeconds = p.seconds || 0;
+            attemptLog = p.log || [];
+            resumed = currentQuestions.length === mod.size;
+          }
+        } catch (e) {}
+      }
+      if (!resumed) {
+        storageDel(progressKey(mod.id));
+        currentQuestions = shuffle(mod.questions).slice(0, mod.size);
+        currentQuestionIdx = 0;
+        currentScore = 0;
+        quizSeconds = 0;
+        attemptLog = [];
+      }
+      document.getElementById("quizCategoryTitle").innerText = mod.title;
+      showView("viewQuiz");
+      window.scrollTo(0, 0);
+      startTimer();
+      renderQuestion();
+    }
+
+    function startTimer() {
+      if (quizTimerInterval) clearInterval(quizTimerInterval);
+      const paint = () => {
+        const mins = String(Math.floor(quizSeconds / 60)).padStart(2, "0");
+        const secs = String(quizSeconds % 60).padStart(2, "0");
+        document.getElementById("quizTimer").innerText = `${mins}:${secs}`;
+      };
+      paint();
+      quizTimerInterval = setInterval(() => { quizSeconds++; paint(); }, 1000);
+    }
+
+    function renderQuestion() {
+      answered = false;
+      const q = currentQuestions[currentQuestionIdx];
+      const total = currentQuestions.length;
+
+      document.getElementById("quizQuestionCount").innerText = `Question ${currentQuestionIdx + 1} of ${total}`;
+      document.getElementById("quizProgressBar").style.width = `${((currentQuestionIdx + 1) / total) * 100}%`;
+
+      const t = TYPES[q.type];
+      document.getElementById("quizTypeBadge").innerHTML = `
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border ${t.badge} text-sm md:text-base font-black uppercase tracking-wider">
+            <i class="fa-solid ${t.icon}"></i> ${t.label}
+          </span>
+          <span class="text-sm md:text-base font-black text-emerald-400">\u2714 ${currentScore} / ${currentQuestionIdx} correct</span>
+        </div>`;
+
+      document.getElementById("quizSentence").innerHTML = questionBodyHtml(q);
+
+      const hintZone = document.getElementById("verbFormsHint");
+      if (q.type === "translate") {
+        const words = vocabHints(q.prompt, 7);
+        if (words.length) {
+          hintZone.innerHTML = `
+            <button type="button" onclick="toggleQuizHint()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-black px-5 py-3 rounded-2xl transition text-base">
+              \ud83d\udca1 Vocabulary
+            </button>
+            <div id="hintBox" class="hidden mt-3 bg-amber-950/30 border-2 border-amber-500/40 rounded-2xl p-4 space-y-1">
+              ${words.map(w => `<p class="text-base md:text-lg text-amber-200"><strong lang="es">${escapeHtml(w.es)}</strong> = ${escapeHtml(w.en)}</p>`).join("")}
+            </div>`;
+          hintZone.classList.remove("hidden");
+        } else {
+          hintZone.innerHTML = "";
+          hintZone.classList.add("hidden");
+        }
+      } else {
+        hintZone.innerHTML = "";
+        hintZone.classList.add("hidden");
+      }
+
+      document.getElementById("quizFeedback").classList.add("hidden");
+      document.getElementById("nextQuestionBtn").classList.add("hidden");
+      const checkBtn = document.getElementById("checkAnswerBtn");
+      checkBtn.classList.remove("hidden");
+      checkBtn.disabled = (q.type === "mcq");
+
+      const inputs = questionInputs();
+      inputs.forEach((input, i) => {
+        input.addEventListener("keydown", (ev) => {
+          if (ev.key !== "Enter") return;
+          ev.preventDefault();
+          if (answered) { nextQuestion(); return; }
+          if (i < inputs.length - 1) inputs[i + 1].focus(); else checkExercise();
+        });
+      });
+      if (inputs[0]) inputs[0].focus();
+    }
+
+    function checkExercise() {
+      if (answered) return;
+      const q = currentQuestions[currentQuestionIdx];
+      const isMcq = q.type === "mcq";
+      const inputs = questionInputs();
+      const hidden = document.getElementById("ans_0");
+      const values = isMcq ? [(hidden && hidden.value) || ""] : inputs.map(i => i.value.trim());
+      if (values.every(v => !v)) {
+        if (isMcq) return;
+        if (inputs[0]) { inputs[0].focus(); inputs[0].placeholder = "?"; }
+        return;
+      }
+
+      let ok = false, parts = null;
+      if (isMcq) ok = gradeMcq(values[0], q);
+      else if (q.type === "gap") { const r = gradeGapValues(values, q); ok = r.ok; parts = r.partes; }
+      else ok = gradeTranslation(values[0], q);
+
+      if (isMcq) {
+        document.querySelectorAll(".mcq-opt").forEach(b => {
+          b.disabled = true;
+          const esta = normalize(b.dataset.value);
+          if (esta === normalize(q.answers[0])) b.classList.add("mcq-ok");
+          else if (esta === normalize(values[0])) b.classList.add("mcq-ko");
+          else b.classList.add("opacity-50");
+        });
+      } else {
+        inputs.forEach((input, i) => {
+          input.readOnly = true;
+          input.classList.add((parts ? parts[i] : ok) ? "gap-ok" : "gap-ko");
+        });
+      }
+      answered = true;
+      if (ok) currentScore++;
+
+      attemptLog.push({
+        type: q.type, prompt: questionPromptText(q), user: values.join(" \u00b7 "),
+        correct: modelAnswer(q), ok: ok
+      });
+      saveProgress();
+
+      let detail = "";
+      if (q.type === "gap") {
+        detail = `<div class="mt-3 text-base md:text-xl text-slate-200 font-semibold">${escapeHtml(mayuscula(fillGaps(q.text, modelGapValues(q))))}</div>`;
+      } else if (isMcq) {
+        detail = `<div class="mt-3 text-base md:text-xl text-slate-200 font-semibold">${escapeHtml(mayuscula(fillGaps(q.text, (q.answers[0] || "").split(" / "))))}</div>`;
+      } else if (q.type === "translate") {
+        const otras = q.answers.slice(1, 4);
+        detail = otras.length
+          ? `<div class="mt-3 text-base md:text-lg text-slate-300 font-semibold">Also accepted: ${otras.map(a => `<span class="font-mono text-emerald-200">${escapeHtml(a)}</span>`).join(" \u00b7 ")}</div>`
+          : "";
+      }
+      if (q.x) {
+        detail += `<div class="mt-3 text-base md:text-lg text-slate-300 font-semibold border-t border-slate-700/60 pt-3">
+          <i class="fa-solid fa-lightbulb text-amber-400"></i> ${q.x}</div>`;
+      }
+
+      const feedbackBox = document.getElementById("quizFeedback");
+      if (ok) {
+        feedbackBox.className = "p-6 md:p-8 rounded-2xl text-lg md:text-2xl font-bold border-2 bg-emerald-950/40 border-emerald-500/60 text-emerald-200";
+        feedbackBox.innerHTML = `<strong>CORRECT! \ud83c\udf89</strong>${detail}`;
+      } else {
+        feedbackBox.className = "p-6 md:p-8 rounded-2xl text-lg md:text-2xl font-bold border-2 bg-rose-950/40 border-rose-500/60 text-rose-200";
+        const solucion = (q.type === "gap")
+          ? modelGapValues(q).join("  +  ")
+          : q.answers[0];
+        feedbackBox.innerHTML = `<div class="mb-2"><strong>SOLUTION:</strong> <span class="text-emerald-300 font-mono">${escapeHtml(solucion)}</span></div>${detail}`;
+      }
+      feedbackBox.classList.remove("hidden");
+      document.getElementById("checkAnswerBtn").classList.add("hidden");
+      const nextBtn = document.getElementById("nextQuestionBtn");
+      nextBtn.classList.remove("hidden");
+      nextBtn.innerHTML = (currentQuestionIdx < currentQuestions.length - 1)
+        ? `Next question <i class="fa-solid fa-arrow-right ml-2"></i>`
+        : `See result <i class="fa-solid fa-flag-checkered ml-2"></i>`;
+      nextBtn.focus();
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIdx < currentQuestions.length - 1) {
+        currentQuestionIdx++;
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function quitQuiz() {
+      if (confirm("Leave this module now? Your progress is saved on this device and you can continue later.")) {
+        clearInterval(quizTimerInterval);
+        goHome();
+      }
+    }
+
+    function finishQuiz() {
+      clearInterval(quizTimerInterval);
+      const mod = currentModule();
+      storageDel(progressKey(mod.id));
+      const total = currentQuestions.length;
+      const percentage = Math.round((currentScore / total) * 100);
+      const timeStr = `${Math.floor(quizSeconds / 60)}m ${quizSeconds % 60}s`;
+      const nowStr = new Date().toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" });
+      const passed = percentage >= passMark(mod);
+
+      const record = {
+        studentName: fullName(),
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        email: currentUser.email,
+        grade: currentUser.grade,
+        group: currentUser.grade,
+        classCode: currentUser.guest ? "" : currentUser.classCode,
+        guest: !!currentUser.guest,
+        topic: mod.title,
+        moduleId: mod.id,
+        exerciseType: "past_tenses_levels",
+        score: percentage,
+        rawScore: `${currentScore}/${total}`,
+        passed: passed,
+        secondsSpent: quizSeconds,
+        timeSpent: timeStr,
+        dateTime: nowStr,
+        timestamp: Date.now(),
+        answers: attemptLog.map(a => ({ prompt: a.prompt, type: a.type, user: a.user, correct: a.correct, ok: a.ok }))
+      };
+
+      const message = passed
+        ? `
+          <div class="bg-emerald-950/50 border-2 border-emerald-400/60 rounded-2xl p-5 md:p-6 text-center space-y-3">
+            <h3 class="text-2xl md:text-3xl font-black text-emerald-300">🎉 CONGRATULATIONS, ${escapeHtml(currentUser.firstName.toUpperCase())}!</h3>
+            <p class="text-slate-100 text-base md:text-xl">You have passed <strong>${mod.title}</strong>. Well done!</p>
+            <div class="bg-amber-400/15 border-2 border-amber-400/60 rounded-xl p-4 text-amber-200 text-base md:text-xl font-bold">
+              <i class="fa-solid fa-camera"></i> Now take a <strong>SCREENSHOT</strong> of this result and send it to your teacher through <strong>Google Classroom</strong>.
+            </div>
+          </div>`
+        : `
+          <div class="bg-rose-950/40 border-2 border-rose-500/50 rounded-2xl p-5 md:p-6 text-left space-y-2">
+            <p class="text-rose-200 text-lg md:text-xl font-black"><i class="fa-solid fa-rotate-right"></i> You have to try again!</p>
+            <p class="text-slate-200 text-base md:text-lg">You got <strong>${currentScore} out of ${total}</strong>. You need <strong class="text-amber-300">at least ${passMark(mod)}% (${Math.ceil(total * passMark(mod) / 100)} out of ${total})</strong> to pass.
+            Remember: <strong>for your work to count, you must pass every level of every module</strong>.</p>
+            <p class="text-slate-300 text-base md:text-lg">Study the verb list again, look at your mistakes below and have another go. You can do it! 💪
+            When you pass, take a screenshot of your result and send it to your teacher through Google Classroom.</p>
+          </div>`;
+
+      document.getElementById("resultsCard").innerHTML = `
+        ${studentStrip()}
+        <div class="w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl font-black ${passed ? "bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/50" : "bg-rose-500/20 text-rose-400 border-2 border-rose-500/50"}">
+          ${percentage}%
+        </div>
+        ${message}
+        <div class="bg-slate-950 p-6 rounded-2xl border-2 border-slate-800 text-left text-base md:text-xl text-slate-200 space-y-3 max-w-lg mx-auto">
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Name:</span> <span class="font-bold text-white text-right">${escapeHtml(currentUser.firstName)}</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Surname(s):</span> <span class="font-bold text-white text-right">${escapeHtml(currentUser.lastName)}</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Group:</span> <span class="font-bold text-emerald-300">${escapeHtml(currentUser.grade)}</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Exercise:</span> <span class="font-bold text-emerald-400 text-right">${mod.title}</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Score:</span> <span class="font-bold text-white">${record.rawScore} (${percentage}%)</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Result:</span> <span class="font-bold ${passed ? "text-emerald-400" : "text-rose-400"} text-right">${passed ? "✅ Passed" : "⚠️ Not passed (minimum " + passMark(mod) + "%)"}</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Time:</span> <span class="font-bold text-emerald-400">${timeStr}</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Class code:</span> <span class="font-bold text-amber-400">${currentUser.guest ? "— (guest · not saved)" : escapeHtml(currentUser.classCode)}</span></div>
+          <div class="flex justify-between gap-3"><span class="text-slate-400">Date:</span> <span class="font-bold text-white">${nowStr}</span></div>
+        </div>
+        <div id="saveStatusLine" class="text-xs font-bold text-slate-500 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Saving to the cloud...
+        </div>
+        <div class="pt-4 flex flex-col md:flex-row gap-3 justify-center no-print">
+          ${!passed ? `<button onclick="startCurrentQuiz(true)" class="bg-rose-600 hover:bg-rose-500 text-white font-black text-lg px-8 py-4 rounded-2xl transition order-first">🔁 Try this module again</button>` : ""}
+          <button onclick="goHome()" class="${passed ? "bg-emerald-600 hover:bg-emerald-500" : "bg-slate-800 hover:bg-slate-700"} text-white font-black text-lg px-8 py-4 rounded-2xl transition">Back to Dashboard</button>
+        </div>`;
+
+      renderReview();
+      showView("viewResults");
+      window.scrollTo(0, 0);
+      saveResultToFirebase(record);
+    }
+
+    function renderReview() {
+      const wrong = attemptLog.filter(a => !a.ok).length;
+      const rows = attemptLog.map((a, idx) => {
+        const t = TYPES[a.type] || TYPES.gap;
+        return `
+          <div class="bg-slate-950 border ${a.ok ? "border-emerald-500/30" : "border-rose-500/50"} rounded-2xl p-3 md:p-4 text-left">
+            <div class="flex justify-between items-start gap-3 mb-1">
+              <span class="text-sm font-black ${a.ok ? "text-emerald-400" : "text-rose-400"}"><i class="fa-solid ${a.ok ? "fa-circle-check" : "fa-circle-xmark"}"></i> ${idx + 1}</span>
+              <span class="text-[11px] font-black uppercase px-2 py-1 rounded-lg border ${t.badge}">${t.label}</span>
+            </div>
+            <p class="text-base md:text-lg text-slate-200 font-semibold">${escapeHtml(a.prompt)}</p>
+            <p class="text-sm md:text-base mt-1"><span class="text-slate-500">You wrote:</span> <span class="${a.ok ? "text-emerald-300" : "text-rose-300"} font-mono">${escapeHtml(a.user) || "\u2014"}</span></p>
+            ${a.ok ? "" : `<p class="text-sm md:text-base"><span class="text-slate-500">Correct:</span> <span class="text-emerald-300 font-mono">${escapeHtml(a.correct)}</span></p>`}
+          </div>`;
+      }).join("");
+      document.getElementById("reviewCard").innerHTML = `
+        <p class="text-sm md:text-base font-bold text-slate-300 border-b border-slate-800 pb-3 mb-3">
+          <i class="fa-solid fa-user text-emerald-400 mr-1"></i> ${escapeHtml(currentUser.firstName)} <span class="text-emerald-300">${escapeHtml(currentUser.lastName)}</span>
+          <span class="text-slate-500">\u00b7</span> <span class="text-amber-300">Group: ${escapeHtml(currentUser.grade)}</span>
+        </p>
+        <div class="flex justify-between items-center mb-2 gap-3">
+          <h3 class="text-xl md:text-2xl font-black text-white"><i class="fa-solid fa-list-check text-emerald-400 mr-2"></i>Correction (${wrong} mistake${wrong === 1 ? "" : "s"})</h3>
+          <button onclick="window.print()" class="no-print text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-2 rounded-xl"><i class="fa-solid fa-print"></i> Print</button>
+        </div>
+        <div class="grid grid-cols-1 gap-2">${rows}</div>`;
+    }
+
+    function saveResultToFirebase(record, isRetry) {
+      if (!isRetry) saveResultLocally(record);
+
+      if (currentUser.guest || !currentUser.uid) {
+        const line = document.getElementById("saveStatusLine");
+        if (line) line.innerHTML = `<i class="fa-solid fa-user-clock text-slate-400"></i> <span class="text-slate-400">Guest mode: this result is only on this device, it is not sent to any teacher.</span>`;
+        return;
+      }
+
+      myAttemptsRef().push(record).then(() => {
+        const line = document.getElementById("saveStatusLine");
+        if (line) line.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span class="text-emerald-400">Saved to the cloud</span>`;
+      }).catch(err => {
+        console.error("Error saving to Firebase:", err);
+        if (!isRetry) {
+          setTimeout(() => saveResultToFirebase(record, true), 2500);
+        } else {
+          const line = document.getElementById("saveStatusLine");
+          if (line) line.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400"></i> <span class="text-amber-400">Could not save. Please tell your teacher.</span>`;
+        }
+      });
+    }
+
+    /* ============================================================
+       FINAL REPORT
+       ============================================================ */
+    function showGlobalReportModal() {
+      showView("viewGlobalReport");
+      window.scrollTo(0, 0);
+      const container = document.getElementById("globalReportDetails");
+      container.innerHTML = `<div class="text-center py-10 text-slate-400 font-bold"><i class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i><br>Loading your report...</div>`;
+
+      fetchMyRecords((records) => {
+        let completedCount = 0, passedCount = 0, sum = 0, secondsSum = 0;
+        let breakdownHtml = "";
+        LEVELS.forEach(lv => {
+          const mine = modulesOfLevel(lv.n);
+          const donos = mine.filter(m => records.some(r => r && r.moduleId === m.id)).length;
+          breakdownHtml += `<div class="md:col-span-2 mt-2 flex items-center justify-between gap-3">
+              <span class="text-sm font-black px-3 py-1 rounded-xl border ${lv.chip}">${lv.name}</span>
+              <span class="text-xs font-bold text-slate-500">${donos} / ${mine.length} done</span>
+            </div>`;
+          mine.forEach(mod => {
+          const list = records.filter(r => r && r.moduleId === mod.id);
+          if (list.length) {
+            const best = list.reduce((max, r) => (Number(r.score) > Number(max.score) ? r : max), list[0]);
+            const ok = Number(best.score) >= passMark(mod);
+            completedCount++; if (ok) passedCount++;
+            sum += Number(best.score) || 0; secondsSum += best.secondsSpent || 0;
+            breakdownHtml += `
+              <div class="flex justify-between items-center bg-slate-950/80 p-4 rounded-xl border ${ok ? "border-emerald-500/40" : "border-rose-500/50"} text-sm md:text-base">
+                <span class="font-extrabold text-white">${mod.moduleTitle}</span>
+                <div class="text-right">
+                  <span class="font-black ${ok ? "text-emerald-400" : "text-rose-400"}">${ok ? "✅" : "❌"} ${best.score}%</span>
+                  <span class="text-slate-500 text-xs ml-2">(${best.rawScore || ""} · ${list.length} attempt${list.length > 1 ? "s" : ""})</span>
+                </div>
+              </div>`;
+          } else {
+            breakdownHtml += `
+              <div class="flex justify-between items-center bg-slate-950/30 p-4 rounded-xl border border-slate-800/40 text-sm opacity-60">
+                <span class="font-bold text-slate-400">${mod.moduleTitle}</span>
+                <span class="text-rose-400 font-bold italic">Pending</span>
+              </div>`;
+          }
+          });
+        });
+
+        if (completedCount < MODULES.length) {
+          container.innerHTML = `
+            ${studentStrip()}
+            <div class="text-center py-4 space-y-4">
+              <div class="w-16 h-16 mx-auto rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl border-2 border-amber-500/40"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <h3 class="text-2xl font-black text-white">Incomplete</h3>
+              <p class="text-slate-300 text-base md:text-lg max-w-md mx-auto">You have done <strong>${completedCount} of ${MODULES.length}</strong> levels (${MODULE_DEFS.length} modules \u00d7 ${LEVELS.length} levels). Pass them all to master the past tenses.</p>
+              <div class="space-y-2 text-left my-4">${breakdownHtml}</div>
+              <button onclick="goHome()" class="no-print bg-emerald-600 text-white font-extrabold px-8 py-4 rounded-2xl text-base">Go back and continue</button>
+            </div>`;
+          return;
+        }
+
+        const allPassed = passedCount === MODULES.length;
+        const avg = Math.round(sum / MODULES.length);
+        const nowStr = new Date().toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" });
+        const msg = allPassed
+          ? `<div class="bg-emerald-950/50 border-2 border-emerald-400/60 rounded-2xl p-5 md:p-6 text-center space-y-3">
+               <div class="text-5xl">🏆🎉</div>
+               <h3 class="text-2xl md:text-3xl font-black text-emerald-300">CONGRATULATIONS, ${escapeHtml(currentUser.firstName.toUpperCase())}!</h3>
+               <p class="text-slate-100 text-base md:text-xl">You have passed <strong>all ${MODULES.length} levels</strong>: you have mastered the past tenses!</p>
+               <div class="bg-amber-400/15 border-2 border-amber-400/60 rounded-xl p-4 text-amber-200 text-base md:text-xl font-bold"><i class="fa-solid fa-camera"></i> Take a <strong>SCREENSHOT</strong> of this final result and send it to your teacher through <strong>Google Classroom</strong>.</div>
+             </div>`
+          : `<div class="bg-rose-950/40 border-2 border-rose-500/50 rounded-2xl p-5 md:p-6 text-left space-y-2">
+               <p class="text-rose-200 text-lg md:text-xl font-black"><i class="fa-solid fa-rotate-right"></i> Keep going — you're not there yet!</p>
+               <p class="text-slate-200 text-base md:text-lg">You have passed <strong>${passedCount} of ${MODULES.length}</strong> levels. Your work only counts when you pass <strong>all of them</strong>. Repeat the ones marked in red \u2014 you can do it! \ud83d\udcaa</p>
+             </div>`;
+
+        container.innerHTML = `
+          <div class="grid grid-cols-3 gap-4 items-center bg-slate-950/80 p-5 rounded-2xl border border-slate-800">
+            <div class="col-span-2 space-y-1">
+              <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Student</p>
+              <h3 class="text-xl md:text-2xl font-black text-white leading-tight">${escapeHtml(currentUser.firstName)} <span class="text-emerald-300">${escapeHtml(currentUser.lastName)}</span></h3>
+              <p class="text-sm md:text-base text-emerald-300 font-black">Group: ${escapeHtml(currentUser.grade)}</p>
+              <p class="text-xs text-slate-400 font-semibold">${escapeHtml(currentUser.email)}</p>
+              <p class="text-xs text-amber-400 font-extrabold mt-1">${currentUser.guest ? "Guest · not sent to any teacher" : "Class code: " + escapeHtml(currentUser.classCode)} · ${nowStr}</p>
+            </div>
+            <div class="text-center ${allPassed ? "bg-emerald-500/10 border-2 border-emerald-500/40" : "bg-rose-500/10 border-2 border-rose-500/40"} p-4 rounded-2xl">
+              <span class="text-xs font-bold ${allPassed ? "text-emerald-400" : "text-rose-400"} block uppercase">Average</span>
+              <span class="text-4xl md:text-5xl font-black ${allPassed ? "text-emerald-400" : "text-rose-400"} leading-none">${avg}%</span>
+              <span class="block text-[11px] md:text-xs font-black mt-1 ${allPassed ? "text-emerald-300" : "text-rose-300"}">${allPassed ? "✅ PASSED" : "⚠️ NOT PASSED"}</span>
+            </div>
+          </div>
+          ${msg}
+          <div>
+            <p class="text-xs font-black uppercase text-slate-400 mb-3 tracking-wider">Best score in each module and level</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${breakdownHtml}</div>
+          </div>
+          <div class="pt-4 border-t border-slate-800 flex justify-center no-print">
+            <button onclick="window.print()" class="px-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl transition text-base md:text-lg flex items-center justify-center gap-3"><i class="fa-solid fa-print"></i> Print / Save PDF</button>
+          </div>`;
+      });
+    }
+    /* ============================================================
+       TEACHER PANEL
+       ------------------------------------------------------------
+       Cada profesor/a entra con SU PIN (ver window.CLASSES arriba) y
+       solo ve los resultados guardados bajo SU codigo de clase.
+       ============================================================ */
+
+    let teacherAllRecords = [];
+    let teacherSearchTerm = "";
+    let teacherRefs = [];
+    let teacherRecordsByCode = {};
+    let teacherLegacyRecords = [];
+    let teacherOpenRows = new Set();
+    let currentTeacherScope = [];
+    const TEACHER_COLSPAN = 7 + LEVELS.length;
+
+    function openTeacherPanelFor(user) {
+      const mine = findTeacher(user && user.email);
+      if (!mine) {
+        alert("Esta cuenta (" + ((user && user.email) || "?") + ") no es la del profesor.\n\n" +
+              "Si eres tu: pon tu correo de Google en TEACHER_EMAIL, dentro del archivo, " +
+              "y en reglas-firebase.json.");
+        return false;
+      }
+      currentTeacherScope = [mine];
+      currentTeacherLoggedIn = mine.teacher || "Teacher";
+      if (quizTimerInterval) clearInterval(quizTimerInterval);
+      renderTeacherDashboard();
+      showView("viewTeacher");
+      return true;
+    }
+
+    function showTeacherLogin() {
+      if (currentAuthUser && findTeacher(currentAuthUser.email)) {
+        openTeacherPanelFor(currentAuthUser);
+        return;
+      }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      auth.signInWithPopup(provider).then(res => {
+        currentAuthUser = res.user;
+        openTeacherPanelFor(res.user);
+      }).catch(err => {
+        if (err && err.code === "auth/popup-blocked") { auth.signInWithRedirect(provider); return; }
+        if (err && (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request")) return;
+        alert("No se pudo entrar: " + ((err && err.message) || err));
+      });
+    }
+
+    function teacherCodes() { return Object.keys(teacherRecordsByCode).sort(); }
+
+    function isRecord(v) {
+      return v && typeof v === "object" && (v.moduleId || v.studentName || v.score !== undefined);
+    }
+
+    function detachTeacherRefs() {
+      teacherRefs.forEach(r => { try { r.off("value"); } catch (e) {} });
+      teacherRefs = [];
+    }
+
+    function mergeTeacherRecords() {
+      let all = [];
+      Object.keys(teacherRecordsByCode).forEach(k => { all = all.concat(teacherRecordsByCode[k]); });
+      teacherAllRecords = all.concat(teacherLegacyRecords);
+    }
+
+    function readBranch(snapshot, code) {
+      const out = [];
+      snapshot.forEach(childSnap => {
+        const v = childSnap.val();
+        if (!v || typeof v !== "object") return;
+        if (isRecord(v)) {                       // formato antiguo (sin cuentas)
+          out.push(Object.assign({}, v, { classCode: v.classCode || code }));
+          return;
+        }
+        const perfil = v.profile || {};
+        const intentos = v.attempts || {};
+        Object.keys(intentos).forEach(k => {
+          const r = intentos[k];
+          if (isRecord(r)) out.push(Object.assign({}, perfil, r, { classCode: r.classCode || code, uid: childSnap.key }));
+        });
+      });
+      return out;
+    }
+
+    function renderTeacherDashboard() {
+      document.getElementById("teacherTitle").innerText = currentTeacherLoggedIn;
+      renderTeacherTableHead();
+      teacherSearchTerm = "";
+      teacherRecordsByCode = {};
+      teacherLegacyRecords = [];
+      const searchInput = document.getElementById("teacherSearchInput");
+      if (searchInput) searchInput.value = "";
+      const tbody = document.getElementById("teacherTableBody");
+      tbody.innerHTML = `<tr><td colspan="${TEACHER_COLSPAN}" class="p-6 text-center text-slate-400 font-bold">Loading data from the cloud...</td></tr>`;
+
+      detachTeacherRefs();
+      const ref = db.ref(RESULTS_NODE);
+      teacherRefs.push(ref);
+      ref.on("value", (snapshot) => {
+        absorbTeacherSnapshot(snapshot);
+        paintTeacherTable();
+        updateTeacherLastRefreshed();
+      }, (err) => {
+        console.error("Error reading Firebase results:", err);
+        tbody.innerHTML = `<tr><td colspan="${TEACHER_COLSPAN}" class="p-6 text-center text-rose-400 font-bold">\u26a0\ufe0f Could not load the data (${escapeHtml(err.message)}). Check your connection.</td></tr>`;
+      });
+    }
+
+    /* El nodo tiene una carpeta por codigo de clase; los codigos se descubren
+       leyendo, no hay ninguna lista en esta pagina. */
+    function absorbTeacherSnapshot(snapshot) {
+      teacherRecordsByCode = {};
+      teacherLegacyRecords = [];
+      snapshot.forEach(codeSnap => {
+        const v = codeSnap.val();
+        if (!v || typeof v !== "object") return;
+        if (isRecord(v)) { teacherLegacyRecords.push(Object.assign({}, v, { classCode: "\u2014" })); return; }
+        teacherRecordsByCode[codeSnap.key] = readBranch(codeSnap, codeSnap.key);
+      });
+      mergeTeacherRecords();
+      const sub = document.getElementById("teacherSubtitle");
+      const codes = teacherCodes();
+      if (sub) sub.innerHTML = `Class code${codes.length === 1 ? "" : "s"}: <span class="text-amber-300 font-bold">${escapeHtml(codes.join(" \u00b7 ")) || "\u2014"}</span><br>One row per student \u00b7 click a student to see every attempt and every answer they wrote.`;
+    }
+
+    function refreshTeacherDashboardNow() {
+      const btn = document.getElementById("teacherRefreshBtn");
+      if (btn) { btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Refreshing...`; }
+      db.ref(RESULTS_NODE).once("value").then(snapshot => {
+        absorbTeacherSnapshot(snapshot);
+        paintTeacherTable();
+        updateTeacherLastRefreshed();
+      }).catch(err => {
+        alert("Could not refresh: " + err.message);
+      }).then(() => {
+        if (btn) { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> Refresh`; }
+      });
+    }
+
+    function updateTeacherLastRefreshed() {
+      const el = document.getElementById("teacherLastRefreshed");
+      if (el) el.innerText = `Last updated: ${new Date().toLocaleTimeString("en-GB")}`;
+    }
+
+    function renderTeacherTableHead() {
+      document.getElementById("teacherTableHead").innerHTML = `
+        <tr>
+          <th class="p-3">Name</th>
+          <th class="p-3">Surname(s)</th>
+          <th class="p-3">Group</th>
+          <th class="p-3">Code</th>
+          ${LEVELS.map(lv => `<th class="p-3 text-center">${lv.tag} \u00b7 ${lv.type === "mcq" ? "choice" : (lv.type === "gap" ? "gaps" : "transl.")}</th>`).join("")}
+          <th class="p-3 text-center">Average</th>
+          <th class="p-3 text-center">Result</th>
+          <th class="p-3">Last activity</th>
+        </tr>`;
+    }
+
+    function splitName(r) {
+      const first = (r.firstName || "").toString().trim();
+      const last = (r.lastName || "").toString().trim();
+      if (first || last) return { first: first, last: last };
+      const parts = (r.studentName || "").toString().trim().split(/\s+/);
+      return { first: parts.shift() || "\u2014", last: parts.join(" ") };
+    }
+
+    function buildStudentSummaries(records) {
+      const byStudent = {};
+      records.forEach(r => {
+        const n = splitName(r);
+        const key = ((r.uid || r.email || (n.first + " " + n.last) || "no_name") + "|" + (r.classCode || "")).toString().trim().toLowerCase();
+        if (!byStudent[key]) {
+          byStudent[key] = { key, firstName: n.first, lastName: n.last, studentName: r.studentName || (n.first + " " + n.last),
+            grade: r.grade || r.group || "\u2014", classCode: r.classCode || "\u2014", email: r.email || "",
+            attempts: [], lastTimestamp: 0, lastDateTime: "" };
+        }
+        const st = byStudent[key];
+        st.attempts.push(r);
+        const ts = Number(r.timestamp) || 0;
+        if (ts >= st.lastTimestamp || !st.lastDateTime) {
+          st.lastTimestamp = ts;
+          st.lastDateTime = r.dateTime || "";
+          if (n.first) st.firstName = n.first;
+          if (n.last) st.lastName = n.last;
+          st.studentName = (st.firstName + " " + st.lastName).trim();
+          if (r.grade || r.group) st.grade = r.grade || r.group;
+        }
+      });
+
+      return Object.values(byStudent).map(st => {
+        const moduleScores = MODULES.map(mod => {
+          const list = st.attempts.filter(a => a.moduleId === mod.id);
+          return list.length ? Math.max(...list.map(a => Number(a.score) || 0)) : null;
+        });
+        const moduleAttempts = MODULES.map(mod => st.attempts.filter(a => a.moduleId === mod.id).length);
+        const levelStats = LEVELS.map(lv => {
+          const idx = MODULES.map((m, i) => i).filter(i => MODULES[i].level === lv.n);
+          const got = idx.filter(i => moduleScores[i] !== null);
+          const passed = got.filter(i => moduleScores[i] >= passMark(MODULES[i])).length;
+          const avg = got.length ? Math.round(got.reduce((a, i) => a + moduleScores[i], 0) / got.length) : null;
+          return { done: got.length, total: idx.length, passed: passed, avg: avg };
+        });
+        const completedCount = moduleScores.filter(sc => sc !== null).length;
+        const allDone = completedCount === MODULES.length;
+        const allPassed = allDone && moduleScores.every((sc, i) => sc >= passMark(MODULES[i]));
+        const finalAverage = allDone ? Math.round(moduleScores.reduce((a, sc) => a + sc, 0) / MODULES.length) : null;
+        return Object.assign({}, st, { moduleScores, moduleAttempts, levelStats, completedCount, allDone, allPassed, finalAverage });
+      });
+    }
+
+    function renderTeacherStats(students) {
+      const total = students.length;
+      const done = students.filter(s => s.allDone);
+      const passed = students.filter(s => s.allPassed).length;
+      const avg = done.length ? Math.round(done.reduce((a, s) => a + s.finalAverage, 0) / done.length) : 0;
+      document.getElementById("teacherStatsGrid").innerHTML = `
+        <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-center"><div class="text-3xl font-black text-white">${total}</div><div class="text-xs text-slate-400 font-bold uppercase mt-1">Students</div></div>
+        <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-center"><div class="text-3xl font-black text-emerald-400">${done.length}/${total}</div><div class="text-xs text-slate-400 font-bold uppercase mt-1">Did all ${MODULES.length} levels</div></div>
+        <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-center"><div class="text-3xl font-black text-emerald-400">${passed}</div><div class="text-xs text-slate-400 font-bold uppercase mt-1">Passed everything</div></div>
+        <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-center"><div class="text-3xl font-black text-amber-400">${avg}%</div><div class="text-xs text-slate-400 font-bold uppercase mt-1">Group average</div></div>`;
+    }
+
+    function filterTeacherTable(term) {
+      teacherSearchTerm = term || "";
+      paintTeacherTable();
+    }
+
+    function visibleStudents() {
+      let students = buildStudentSummaries(teacherAllRecords);
+      const term = teacherSearchTerm.trim().toLowerCase();
+      if (term) {
+        students = students.filter(s =>
+          (s.firstName || "").toLowerCase().includes(term) ||
+          (s.lastName || "").toLowerCase().includes(term) ||
+          (s.email || "").toLowerCase().includes(term) ||
+          (s.grade || "").toLowerCase().includes(term) ||
+          (s.classCode || "").toLowerCase().includes(term));
+      }
+      students.sort((a, b) =>
+        (a.lastName || "").localeCompare(b.lastName || "", "es") ||
+        (a.firstName || "").localeCompare(b.firstName || "", "es"));
+      return students;
+    }
+
+    function toggleStudentDetail(key) {
+      if (teacherOpenRows.has(key)) teacherOpenRows.delete(key); else teacherOpenRows.add(key);
+      paintTeacherTable();
+    }
+
+    function studentDetailHtml(s) {
+      const attempts = s.attempts.slice().sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
+      const header = `
+        <p class="text-sm md:text-base font-bold text-slate-200 mb-2">
+          <i class="fa-solid fa-user text-emerald-400 mr-1"></i> ${escapeHtml(s.firstName)} <span class="text-emerald-300">${escapeHtml(s.lastName)}</span>
+          <span class="text-slate-500">\u00b7</span> <span class="text-amber-300">Group: ${escapeHtml(s.grade)}</span>
+          <span class="text-slate-500">\u00b7</span> <span class="text-slate-400">${escapeHtml(s.email)}</span>
+        </p>`;
+      const body = attempts.map(a => {
+        const ok = Number(a.score) >= passMarkOf(a.moduleId);
+        const answers = Array.isArray(a.answers) ? a.answers : Object.values(a.answers || {});
+        const lines = answers.map((x, i) => `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-3 py-1 border-b border-slate-800/60 text-xs md:text-sm">
+            <span class="text-slate-200">${i + 1}. ${escapeHtml(x.prompt || x.text || "")}</span>
+            <span class="${x.ok ? "text-emerald-300" : "text-rose-300"} font-mono">${x.ok ? "\u2714" : "\u2718"} ${escapeHtml(x.user) || "\u2014"}</span>
+            <span class="text-slate-400 font-mono">${x.ok ? "" : "\u2192 " + escapeHtml(x.correct)}</span>
+          </div>`).join("");
+        return `
+          <details class="bg-slate-950 border ${ok ? "border-emerald-500/30" : "border-rose-500/30"} rounded-xl p-3 mb-2">
+            <summary class="cursor-pointer font-bold text-sm md:text-base flex flex-wrap gap-3 items-center">
+              <span class="text-white">${escapeHtml(a.topic || a.moduleId)}</span>
+              <span class="${ok ? "text-emerald-400" : "text-rose-400"} font-black">${a.score}% (${a.rawScore || ""})</span>
+              <span class="text-slate-500 text-xs">${escapeHtml(a.dateTime || "")} \u00b7 ${escapeHtml(a.timeSpent || "")}</span>
+            </summary>
+            <div class="mt-2">${lines || '<p class="text-slate-500 text-sm">No answer details saved.</p>'}</div>
+          </details>`;
+      }).join("");
+      return header + body;
+    }
+
+    function paintTeacherTable() {
+      const tbody = document.getElementById("teacherTableBody");
+      renderTeacherStats(buildStudentSummaries(teacherAllRecords));
+      const students = visibleStudents();
+
+      if (students.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${TEACHER_COLSPAN}" class="p-6 text-center text-slate-500 font-bold">
+          ${teacherAllRecords.length === 0 ? "No attempts recorded for your class code yet." : "No student matches your search."}</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = "";
+      students.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-800/50 transition cursor-pointer";
+        tr.onclick = () => toggleStudentDetail(s.key);
+
+        const moduleCells = s.levelStats.map((st, i) => {
+          if (!st.done) return `<td class="p-3 text-center text-slate-600">\u2014</td>`;
+          const cls = st.passed === st.total ? "bg-emerald-500/15 text-emerald-400" : (st.avg >= passMark(modulesOfLevel(i + 1)[0]) ? "bg-amber-500/15 text-amber-300" : "bg-rose-500/15 text-rose-400");
+          return `<td class="p-3 text-center"><span class="inline-block px-2 py-1 rounded-lg font-black text-xs ${cls}">${st.passed}/${st.total}</span><span class="block text-[10px] text-slate-500 mt-1">avg ${st.avg}%</span></td>`;
+        }).join("");
+
+        const avgCell = s.allDone
+          ? `<span class="font-black text-white">${s.finalAverage}%</span>`
+          : `<span class="font-bold text-slate-400">${s.completedCount}/${MODULES.length}</span>`;
+        const resultCell = !s.allDone
+          ? `<span class="text-xs font-bold text-slate-500">In progress</span>`
+          : (s.allPassed ? `<span class="text-xs font-black text-emerald-400">\u2705 Passed</span>` : `<span class="text-xs font-black text-rose-400">\u26a0\ufe0f Not passed</span>`);
+        const open = teacherOpenRows.has(s.key);
+
+        tr.innerHTML = `
+          <td class="p-3 font-extrabold text-white"><i class="fa-solid ${open ? "fa-chevron-down" : "fa-chevron-right"} text-slate-500 text-xs mr-1"></i>${escapeHtml(s.firstName)}</td>
+          <td class="p-3 font-extrabold text-emerald-300">${escapeHtml(s.lastName)}<span class="block text-[11px] text-slate-500 font-medium">${escapeHtml(s.email)}</span></td>
+          <td class="p-3 text-slate-300 font-bold">${escapeHtml(s.grade || "\u2014")}</td>
+          <td class="p-3 text-amber-300/80 font-mono text-xs">${escapeHtml(s.classCode || "\u2014")}</td>
+          ${moduleCells}
+          <td class="p-3 text-center">${avgCell}</td>
+          <td class="p-3 text-center">${resultCell}</td>
+          <td class="p-3 text-slate-400 text-xs">${escapeHtml(s.lastDateTime || "\u2014")}</td>`;
+        tbody.appendChild(tr);
+
+        if (open) {
+          const dr = document.createElement("tr");
+          dr.innerHTML = `<td colspan="${TEACHER_COLSPAN}" class="p-3 md:p-4 bg-slate-900/60">${studentDetailHtml(s)}</td>`;
+          tbody.appendChild(dr);
+        }
+      });
+    }
+
+    function exportTeacherCsv() {
+      const students = visibleStudents();
+      const esc = v => `"${(v === null || v === undefined ? "" : String(v)).replace(/"/g, '""')}"`;
+      const header = ["Name", "Surname(s)", "Group", "Class code", "Email",
+        ...MODULES.map(m => m.short + " (best %)"), ...MODULES.map(m => m.short + " (attempts)"),
+        "Average %", "Result", "Last activity"];
+      const rows = students.map(s => [
+        s.firstName, s.lastName, s.grade, s.classCode, s.email,
+        ...s.moduleScores.map(v => v === null ? "" : v),
+        ...s.moduleAttempts,
+        s.allDone ? s.finalAverage : "",
+        !s.allDone ? "In progress" : (s.allPassed ? "Passed" : "Not passed"),
+        s.lastDateTime
+      ]);
+      const csv = "\ufeff" + [header, ...rows].map(r => r.map(esc).join(";")).join("\r\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `past_tenses_${teacherCodes().join("_")}_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+
+    window.onload = initApp;
+  </script>
+</body>
+</html>
