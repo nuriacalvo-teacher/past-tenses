@@ -1294,6 +1294,9 @@
     function canonCore(str) {
       let out = normalizeLoose(str).replace(/[\u2013\u2014]/g, "-");
       out = out.replace(/\boclock\b/g, " ");        // "at eight" = "at eight o'clock"
+      // "to" es palabra de pegamento, pero detrás de estos verbos cuenta:
+      // así no vale "will to go", "going study" ni "used play".
+      out = out.replace(/\b(going|used|use|will|would) to\b/g, "$1_to");
       SWAP_RULES.forEach(r => { out = out.replace(r.re, r.to); });
       const times = [];
       out = out.replace(TIME_RX, m => { times.push(m.trim()); return " "; });
