@@ -73,6 +73,6 @@ review_l3_8   | 288       | 23/23        | 11/11
 review_l3_9   | 4         | 15/15        | 11/11
 --------------------------------------------------------
 TOTAL 70      | 2457      | 1281/1281    | 778/778
-Expansión de todo el nivel 3: 72.6 ms
+Expansión de todo el nivel 3: 76.5 ms
 
 TODO OK ✔
