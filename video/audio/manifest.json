@@ -1,0 +1,280 @@
+{
+ "version": 2,
+ "voices": {
+  "profesora": "en-gb-tutor-6",
+  "alumno": "en-gb-podcaster-4",
+  "modelo": "gemini-3.8-flash-tts"
+ },
+ "clips": {
+  "s0_0_1": {
+   "f": "s0_0_1.mp3",
+   "d": 1.25,
+   "t": "S: [cheerful, waving hello] Hi everyone!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s0_2_0": {
+   "f": "s0_2_0.mp3",
+   "d": 5.69,
+   "t": "[energetic] In English, we have several past tenses, and each one tells a different part of the story.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s0_2_2": {
+   "f": "s0_2_2.mp3",
+   "d": 4.07,
+   "t": "[firm, smiling] No way! And by the end of this lesson, you'll use them all.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s0_3_0": {
+   "f": "s0_3_0.mp3",
+   "d": 9.82,
+   "t": "Today you'll learn the simple past, the past continuous and the past perfect. And how to choose between the simple past and the present perfect!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s0_3_1": {
+   "f": "s0_3_1.mp3",
+   "d": 1.75,
+   "t": "S: [excited] Let's go!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s1_0_0": {
+   "f": "s1_0_0.mp3",
+   "d": 3.08,
+   "t": "[energetic] Chapter one: the simple past!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_1_0": {
+   "f": "s1_1_0.mp3",
+   "d": 7.23,
+   "t": "We use it for finished actions at a specific time in the past: yesterday, last week, two days ago.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_2_0": {
+   "f": "s1_2_0.mp3",
+   "d": 7.3,
+   "t": "Regular verbs add -ed, but irregular verbs have their own form. Go becomes went.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_2_2": {
+   "f": "s1_2_2.mp3",
+   "d": 5.19,
+   "t": "[firm, correcting at once] No! Go is irregular. Yesterday I went to the park!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_2_3": {
+   "f": "s1_2_3.mp3",
+   "d": 2.9,
+   "t": "S: [repeating carefully] Yesterday I went to the park.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s1_3_0": {
+   "f": "s1_3_0.mp3",
+   "d": 5.13,
+   "t": "In negatives and questions, we use did, and the verb goes back to the infinitive.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_3_1": {
+   "f": "s1_3_1.mp3",
+   "d": 2.56,
+   "t": "S: [unsure, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] She didn't went to school.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s1_3_2": {
+   "f": "s1_3_2.mp3",
+   "d": 8.12,
+   "t": "[firm] Careful! After didn't, no past form: she didn't go to school. And in questions: did you see the match?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_4_0": {
+   "f": "s1_4_0.mp3",
+   "d": 4.62,
+   "t": "With the verb be, it's was or were, and no did.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_4_1": {
+   "f": "s1_4_1.mp3",
+   "d": 5.25,
+   "t": "S: [trying it out] The children were very tired. And where were you born?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s1_4_2": {
+   "f": "s1_4_2.mp3",
+   "d": 2.14,
+   "t": "[energetic] Perfect!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_0_0": {
+   "f": "s2_0_0.mp3",
+   "d": 2.94,
+   "t": "[energetic] Chapter two: the past continuous!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_1_0": {
+   "f": "s2_1_0.mp3",
+   "d": 5.42,
+   "t": "The form is: was or were, plus a verb ending in -ing.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_1_1": {
+   "f": "s2_1_1.mp3",
+   "d": 2.85,
+   "t": "S: [checking] I was working, they were working?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s2_1_2": {
+   "f": "s2_1_2.mp3",
+   "d": 1.15,
+   "t": "That's it!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_2_0": {
+   "f": "s2_2_0.mp3",
+   "d": 4.37,
+   "t": "We use it for an action in progress at a moment in the past.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_2_1": {
+   "f": "s2_2_1.mp3",
+   "d": 3.09,
+   "t": "S: [trying it out] At eight o'clock last night, I was having dinner.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s2_2_2": {
+   "f": "s2_2_2.mp3",
+   "d": 4.04,
+   "t": "[energetic] Right! It was in progress at eight o'clock.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_3_0": {
+   "f": "s2_3_0.mp3",
+   "d": 4.18,
+   "t": "We also use it to describe the background of a story.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_3_1": {
+   "f": "s2_3_1.mp3",
+   "d": 3.29,
+   "t": "S: [dreamy] The sun was shining and the birds were singing.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s2_4_0": {
+   "f": "s2_4_0.mp3",
+   "d": 2.64,
+   "t": "S: [confident, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] They was playing football.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s2_4_1": {
+   "f": "s2_4_1.mp3",
+   "d": 5.17,
+   "t": "[firm, stopping the student] Stop! With they, use were. They were playing football.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_4_2": {
+   "f": "s2_4_2.mp3",
+   "d": 2.67,
+   "t": "S: [proud] They were playing football. Easy!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s2_5_0": {
+   "f": "s2_5_0.mp3",
+   "d": 6.08,
+   "t": "And state verbs like know, like or want never go in the continuous.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s2_5_1": {
+   "f": "s2_5_1.mp3",
+   "d": 4.11,
+   "t": "S: [unsure, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] I was knowing the answer.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s2_5_2": {
+   "f": "s2_5_2.mp3",
+   "d": 3.26,
+   "t": "[firm] Careful! I knew the answer.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_0_0": {
+   "f": "s3_0_0.mp3",
+   "d": 3.21,
+   "t": "[energetic] Chapter three: the past perfect!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_1_0": {
+   "f": "s3_1_0.mp3",
+   "d": 6.4,
+   "t": "The form is: had, plus the past participle. It's the past before the past.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_1_1": {
+   "f": "s3_1_1.mp3",
+   "d": 3.85,
+   "t": "S: [checking] I had seen, she had seen, they had seen?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s3_1_2": {
+   "f": "s3_1_2.mp3",
+   "d": 3.15,
+   "t": "Exactly! Had for everyone.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_2_0": {
+   "f": "s3_2_0.mp3",
+   "d": 5.09,
+   "t": "We use it for an action that happened before another past action.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_2_1": {
+   "f": "s3_2_1.mp3",
+   "d": 4.54,
+   "t": "S: [trying it out] When we got to the cinema, the film had already started.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s3_2_2": {
+   "f": "s3_2_2.mp3",
+   "d": 4.0,
+   "t": "[energetic] Perfect! First the film started, then you arrived.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_3_0": {
+   "f": "s3_3_0.mp3",
+   "d": 6.23,
+   "t": "It's great for explaining causes, and it often goes with by the time and already.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_3_1": {
+   "f": "s3_3_1.mp3",
+   "d": 4.65,
+   "t": "S: [thinking it through] By the time the police arrived, the thieves had escaped.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s3_3_2": {
+   "f": "s3_3_2.mp3",
+   "d": 1.46,
+   "t": "[energetic] Brilliant!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s3_4_0": {
+   "f": "s3_4_0.mp3",
+   "d": 4.17,
+   "t": "S: [confident, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] When I got home, I realised I have lost my keys.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s3_4_2": {
+   "f": "s3_4_2.mp3",
+   "d": 2.4,
+   "t": "S: [repeating carefully] I realised I had lost my keys.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s3_5_0": {
+   "f": "s3_5_0.mp3",
+   "d": 3.17,
+   "t": "S: [unsure, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] After she has finished her homework, she went out.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s3_5_1": {
+   "f": "s3_5_1.mp3",
+   "d": 6.25,
+   "t": "[firm] Careful! It all happened in the past: after she had finished her homework, she went out.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  }
+ }
+}
