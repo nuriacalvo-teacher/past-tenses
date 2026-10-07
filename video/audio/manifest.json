@@ -6,11 +6,221 @@
   "modelo": "gemini-3.8-flash-tts"
  },
  "clips": {
+  "q0": {
+   "f": "q0.mp3",
+   "d": 5.53,
+   "t": "Question 1. We, blank, to the beach last summer.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q0_a0": {
+   "f": "q0_a0.mp3",
+   "d": 1.68,
+   "t": "We went to the beach last summer.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q0_a1": {
+   "f": "q0_a1.mp3",
+   "d": 2.98,
+   "t": "We have gone to the beach last summer.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q0_a2": {
+   "f": "q0_a2.mp3",
+   "d": 2.4,
+   "t": "We go to the beach last summer.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q0_no": {
+   "f": "q0_no.mp3",
+   "d": 10.39,
+   "t": "Not quite. The right answer is: went. Last summer is a finished time, so we use the simple past. Go is irregular: went.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q0_ok": {
+   "f": "q0_ok.mp3",
+   "d": 7.76,
+   "t": "Correct! Last summer is a finished time, so we use the simple past. Go is irregular: went.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q1": {
+   "f": "q1.mp3",
+   "d": 6.04,
+   "t": "Question 2. They, blank, football when it started to rain.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q1_a0": {
+   "f": "q1_a0.mp3",
+   "d": 2.56,
+   "t": "They are playing football when it started to rain.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q1_a1": {
+   "f": "q1_a1.mp3",
+   "d": 3.24,
+   "t": "They were playing football when it started to rain.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q1_a2": {
+   "f": "q1_a2.mp3",
+   "d": 3.42,
+   "t": "They have played football when it started to rain.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q1_no": {
+   "f": "q1_no.mp3",
+   "d": 11.86,
+   "t": "Not quite. The right answer is: were playing. It's a long action interrupted by a short one, so we use the past continuous: were playing.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q1_ok": {
+   "f": "q1_ok.mp3",
+   "d": 7.75,
+   "t": "Correct! It's a long action interrupted by a short one, so we use the past continuous: were playing.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q2": {
+   "f": "q2.mp3",
+   "d": 6.64,
+   "t": "Question 3. By the time the police arrived, the thieves, blank.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q2_a0": {
+   "f": "q2_a0.mp3",
+   "d": 3.69,
+   "t": "By the time the police arrived, the thieves have escaped.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q2_a1": {
+   "f": "q2_a1.mp3",
+   "d": 19.4,
+   "t": "By the time the police arrived, the thieves escape.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q2_a2": {
+   "f": "q2_a2.mp3",
+   "d": 4.0,
+   "t": "By the time the police arrived, the thieves had escaped.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q2_no": {
+   "f": "q2_no.mp3",
+   "d": 10.66,
+   "t": "Not quite. The right answer is: had escaped. The thieves escaped before the police arrived, so we use the past perfect: had escaped.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q2_ok": {
+   "f": "q2_ok.mp3",
+   "d": 7.49,
+   "t": "Correct! The thieves escaped before the police arrived, so we use the past perfect: had escaped.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q3_a0": {
+   "f": "q3_a0.mp3",
+   "d": 3.92,
+   "t": "I knew Laura for ten years. We are still best friends.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q3_a1": {
+   "f": "q3_a1.mp3",
+   "d": 3.75,
+   "t": "I have known Laura for ten years. We are still best friends.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q3_a2": {
+   "f": "q3_a2.mp3",
+   "d": 3.31,
+   "t": "I know Laura for ten years. We are still best friends.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q3_no": {
+   "f": "q3_no.mp3",
+   "d": 9.38,
+   "t": "Not quite. The right answer is: have known. They are still friends now, so with for we use the present perfect: have known.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q4_a0": {
+   "f": "q4_a0.mp3",
+   "d": 3.38,
+   "t": "I have a shower when the phone rang.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q4_a1": {
+   "f": "q4_a1.mp3",
+   "d": 2.94,
+   "t": "I am having a shower when the phone rang.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q4_a2": {
+   "f": "q4_a2.mp3",
+   "d": 2.69,
+   "t": "I was having a shower when the phone rang.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q4_no": {
+   "f": "q4_no.mp3",
+   "d": 8.93,
+   "t": "Not quite. The right answer is: was having. The shower was in progress when the phone interrupted it, so we use the past continuous.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q4_ok": {
+   "f": "q4_ok.mp3",
+   "d": 6.54,
+   "t": "Correct! The shower was in progress when the phone interrupted it, so we use the past continuous.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q5": {
+   "f": "q5.mp3",
+   "d": 5.38,
+   "t": "Question 6. She failed the exam because she, blank.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q5_a0": {
+   "f": "q5_a0.mp3",
+   "d": 3.56,
+   "t": "She failed the exam because she hadn't studied.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q5_a1": {
+   "f": "q5_a1.mp3",
+   "d": 4.37,
+   "t": "She failed the exam because she hasn't studied.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q5_a2": {
+   "f": "q5_a2.mp3",
+   "d": 3.15,
+   "t": "She failed the exam because she doesn't study.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "q5_no": {
+   "f": "q5_no.mp3",
+   "d": 10.82,
+   "t": "Not quite. The right answer is: hadn't studied. Not studying came before failing the exam, so we use the past perfect: hadn't studied.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "q5_ok": {
+   "f": "q5_ok.mp3",
+   "d": 7.72,
+   "t": "Correct! Not studying came before failing the exam, so we use the past perfect: hadn't studied.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s0_0_0": {
+   "f": "s0_0_0.mp3",
+   "d": 3.09,
+   "t": "Hello, and welcome to Past Lab!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
   "s0_0_1": {
    "f": "s0_0_1.mp3",
    "d": 1.25,
    "t": "S: [cheerful, waving hello] Hi everyone!",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s0_1_0": {
+   "f": "s0_1_0.mp3",
+   "d": 7.77,
+   "t": "This educational app has been made by Nuria Calvo, an English teacher at IES Goya, Zaragoza.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
   "s0_2_0": {
    "f": "s0_2_0.mp3",
@@ -46,6 +256,12 @@
    "f": "s1_1_0.mp3",
    "d": 7.23,
    "t": "We use it for finished actions at a specific time in the past: yesterday, last week, two days ago.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s1_1_2": {
+   "f": "s1_1_2.mp3",
+   "d": 3.98,
+   "t": "[energetic] Exactly! And we watched a film last night.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
   "s1_2_0": {
@@ -258,6 +474,12 @@
    "t": "S: [confident, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] When I got home, I realised I have lost my keys.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
   },
+  "s3_4_1": {
+   "f": "s3_4_1.mp3",
+   "d": 7.16,
+   "t": "[firm] No! You lost them before you realised. Say: I realised I had lost my keys.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
   "s3_4_2": {
    "f": "s3_4_2.mp3",
    "d": 2.4,
@@ -275,6 +497,252 @@
    "d": 6.25,
    "t": "[firm] Careful! It all happened in the past: after she had finished her homework, she went out.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_0_0": {
+   "f": "s4_0_0.mp3",
+   "d": 3.75,
+   "t": "[energetic] Chapter four: simple past or present perfect?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_1_0": {
+   "f": "s4_1_0.mp3",
+   "d": 8.43,
+   "t": "The simple past is finished, and we say when. The present perfect connects with now, and we don't say when.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_1_1": {
+   "f": "s4_1_1.mp3",
+   "d": 3.69,
+   "t": "S: [confused] Hmm... So how do I choose?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s4_1_2": {
+   "f": "s4_1_2.mp3",
+   "d": 2.63,
+   "t": "[energetic] Look at the time words!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_2_0": {
+   "f": "s4_2_0.mp3",
+   "d": 6.17,
+   "t": "Yesterday, last year, ago and questions with when take the simple past.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_2_1": {
+   "f": "s4_2_1.mp3",
+   "d": 5.87,
+   "t": "S: [trying it out] Last year my parents bought a new car. When did you buy your phone?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s4_3_0": {
+   "f": "s4_3_0.mp3",
+   "d": 11.04,
+   "t": "Ever, never, yet, already, so far, this week, for and since take the present perfect.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_3_1": {
+   "f": "s4_3_1.mp3",
+   "d": 2.56,
+   "t": "S: [curious] Have you ever met a famous person?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s4_3_2": {
+   "f": "s4_3_2.mp3",
+   "d": 4.59,
+   "t": "[cheerful] Yes, I have! And I've lived in Zaragoza for ten years.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_5_0": {
+   "f": "s4_5_0.mp3",
+   "d": 6.66,
+   "t": "And for people who are no longer alive, the simple past: Picasso painted thousands of works of art.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s5_0_0": {
+   "f": "s5_0_0.mp3",
+   "d": 3.33,
+   "t": "[energetic] Chapter five: which past?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s5_1_0": {
+   "f": "s5_1_0.mp3",
+   "d": 4.99,
+   "t": "S: [confused] Simple, continuous, perfect... I always mix them up!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s5_1_1": {
+   "f": "s5_1_1.mp3",
+   "d": 3.67,
+   "t": "[energetic] Here's the trick: draw the timeline of the story.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s5_2_0": {
+   "f": "s5_2_0.mp3",
+   "d": 7.62,
+   "t": "A long action goes in the past continuous. A short action that interrupts it goes in the simple past.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s5_2_1": {
+   "f": "s5_2_1.mp3",
+   "d": 3.71,
+   "t": "S: [trying it out] I was having a shower when the phone rang.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s5_2_2": {
+   "f": "s5_2_2.mp3",
+   "d": 3.63,
+   "t": "[energetic] Perfect! While goes with the long action.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s5_3_0": {
+   "f": "s5_3_0.mp3",
+   "d": 7.47,
+   "t": "Actions one after another? All in the simple past. An action before another one? The past perfect.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s5_4_0": {
+   "f": "s5_4_0.mp3",
+   "d": 3.32,
+   "t": "S: [confident, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] I was having a shower when the phone was ringing.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s5_5_0": {
+   "f": "s5_5_0.mp3",
+   "d": 4.3,
+   "t": "S: [unsure, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] When I got to the party, Tom went home, so I didn't see him.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s6_0_0": {
+   "f": "s6_0_0.mp3",
+   "d": 5.26,
+   "t": "[energetic] Chapter six: the top five mistakes. Let's check them one by one!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_1_0": {
+   "f": "s6_1_0.mp3",
+   "d": 4.7,
+   "t": "Mistake number one: adding -ed to irregular verbs.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_1_2": {
+   "f": "s6_1_2.mp3",
+   "d": 3.81,
+   "t": "[firm] I bought a new phone! Buy is irregular.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_2_0": {
+   "f": "s6_2_0.mp3",
+   "d": 3.98,
+   "t": "Mistake number two: a past form after did.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_2_1": {
+   "f": "s6_2_1.mp3",
+   "d": 1.7,
+   "t": "S: [mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] Did you saw the match?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s6_2_2": {
+   "f": "s6_2_2.mp3",
+   "d": 4.5,
+   "t": "[firm] Did you see the match? After did, the infinitive!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_3_0": {
+   "f": "s6_3_0.mp3",
+   "d": 3.77,
+   "t": "Mistake number three: mixing up was and were.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_3_1": {
+   "f": "s6_3_1.mp3",
+   "d": 1.92,
+   "t": "S: [mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] We was very tired.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s6_3_2": {
+   "f": "s6_3_2.mp3",
+   "d": 5.37,
+   "t": "[firm] We were very tired! You, we and they take were.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_4_0": {
+   "f": "s6_4_0.mp3",
+   "d": 3.92,
+   "t": "Mistake number four: ago with the present perfect.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_4_1": {
+   "f": "s6_4_1.mp3",
+   "d": 3.92,
+   "t": "S: [mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] I have lost my keys two days ago.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s6_5_0": {
+   "f": "s6_5_0.mp3",
+   "d": 4.46,
+   "t": "And mistake number five: no participle after had.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_5_1": {
+   "f": "s6_5_1.mp3",
+   "d": 3.02,
+   "t": "S: [mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] I had never be on a plane.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s6_5_2": {
+   "f": "s6_5_2.mp3",
+   "d": 5.57,
+   "t": "[firm] I had never been on a plane! Had, plus the past participle.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s6_5_3": {
+   "f": "s6_5_3.mp3",
+   "d": 2.54,
+   "t": "S: [proud] Got it! No more mistakes!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s7_0_0": {
+   "f": "s7_0_0.mp3",
+   "d": 4.62,
+   "t": "[energetic] Time for a challenge! Choose the right past tense for each sentence.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s7_0_1": {
+   "f": "s7_0_1.mp3",
+   "d": 1.61,
+   "t": "S: [determined, excited] I'm ready!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s8_0_0": {
+   "f": "s8_0_0.mp3",
+   "d": 2.42,
+   "t": "[delighted, proud] Fantastic work!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s8_0_1": {
+   "f": "s8_0_1.mp3",
+   "d": 1.07,
+   "t": "S: [proud] Thanks!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s8_1_0": {
+   "f": "s8_1_0.mp3",
+   "d": 8.88,
+   "t": "Now you know the simple past, the past continuous and the past perfect, and how to choose between the simple past and the present perfect.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s8_2_0": {
+   "f": "s8_2_0.mp3",
+   "d": 11.85,
+   "t": "This educational app was made by Nuria Calvo, an English teacher at IES Goya, Zaragoza. Now it's your turn: click the button and practise with the exercises.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s8_2_1": {
+   "f": "s8_2_1.mp3",
+   "d": 1.51,
+   "t": "S: [cheerful, waving goodbye] See you in class!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
   }
  }
 }
