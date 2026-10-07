@@ -222,6 +222,12 @@
    "t": "[energetic] In English, we have several past tenses, and each one tells a different part of the story.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
+  "s0_2_1": {
+   "f": "s0_2_1.mp3",
+   "d": 3.93,
+   "t": "S: [surprised] Several? I thought there was only one past!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
   "s0_2_2": {
    "f": "s0_2_2.mp3",
    "d": 4.07,
@@ -252,6 +258,12 @@
    "t": "We use it for finished actions at a specific time in the past: yesterday, last week, two days ago.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
+  "s1_1_1": {
+   "f": "s1_1_1.mp3",
+   "d": 3.15,
+   "t": "S: [trying it out] Like... I visited Rome last summer?",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
   "s1_1_2": {
    "f": "s1_1_2.mp3",
    "d": 3.98,
@@ -260,20 +272,20 @@
   },
   "s1_2_0": {
    "f": "s1_2_0.mp3",
-   "d": 7.3,
-   "t": "Regular verbs add -ed, but irregular verbs have their own form. Go becomes went.",
+   "d": 7.38,
+   "t": "Regular verbs add -ed, but irregular verbs have their own form. Swim becomes swam.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
   "s1_2_2": {
    "f": "s1_2_2.mp3",
-   "d": 5.19,
-   "t": "[firm, correcting at once] No! Go is irregular. Yesterday I went to the park!",
+   "d": 5.54,
+   "t": "[firm, correcting at once] No! Swim is irregular. Yesterday I swam in the sea!",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
   "s1_2_3": {
    "f": "s1_2_3.mp3",
-   "d": 2.9,
-   "t": "S: [repeating carefully] Yesterday I went to the park.",
+   "d": 2.77,
+   "t": "S: [repeating carefully] Yesterday I swam in the sea.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
   },
   "s1_3_0": {
@@ -528,6 +540,12 @@
    "t": "S: [trying it out] Last year my parents bought a new car. When did you buy your phone?",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
   },
+  "s4_2_2": {
+   "f": "s4_2_2.mp3",
+   "d": 1.06,
+   "t": "Perfect!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
   "s4_3_0": {
    "f": "s4_3_0.mp3",
    "d": 11.04,
@@ -545,6 +563,24 @@
    "d": 4.59,
    "t": "[cheerful] Yes, I have! And I've lived in Zaragoza for ten years.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_4_0": {
+   "f": "s4_4_0.mp3",
+   "d": 3.06,
+   "t": "S: [confident, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] I have been to London last year.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s4_4_1": {
+   "f": "s4_4_1.mp3",
+   "d": 6.46,
+   "t": "[firm] No! Last year is finished. Say: I went to London last year.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
+  "s4_4_2": {
+   "f": "s4_4_2.mp3",
+   "d": 2.77,
+   "t": "S: [repeating carefully] I went to London last year.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
   },
   "s4_5_0": {
    "f": "s4_5_0.mp3",
@@ -594,17 +630,35 @@
    "t": "Actions one after another? All in the simple past. An action before another one? The past perfect.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
+  "s5_3_1": {
+   "f": "s5_3_1.mp3",
+   "d": 7.57,
+   "t": "S: [thinking] When I got to the party, Tom gave me a drink. Or: when I got to the party, Tom had gone home.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
   "s5_4_0": {
    "f": "s5_4_0.mp3",
    "d": 3.32,
    "t": "S: [confident, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] I was having a shower when the phone was ringing.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
   },
+  "s5_4_1": {
+   "f": "s5_4_1.mp3",
+   "d": 6.72,
+   "t": "[firm] Not quite! The phone interrupts, and it's short: when the phone rang.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
+  },
   "s5_5_0": {
    "f": "s5_5_0.mp3",
    "d": 4.3,
    "t": "S: [unsure, mistake: say it EXACTLY as written, word for word, keeping the grammar mistake] When I got to the party, Tom went home, so I didn't see him.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
+  "s5_5_1": {
+   "f": "s5_5_1.mp3",
+   "d": 5.79,
+   "t": "[firm] No! He left before you arrived. Say: Tom had gone home, so I didn't see him.",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
   "s6_0_0": {
    "f": "s6_0_0.mp3",
