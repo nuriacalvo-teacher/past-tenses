@@ -90,12 +90,6 @@
    "t": "By the time the police arrived, the thieves have escaped.",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
   },
-  "q2_a1": {
-   "f": "q2_a1.mp3",
-   "d": 19.4,
-   "t": "By the time the police arrived, the thieves escape.",
-   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
-  },
   "q2_a2": {
    "f": "q2_a2.mp3",
    "d": 4.0,
