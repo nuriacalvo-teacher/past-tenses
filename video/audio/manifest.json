@@ -702,6 +702,12 @@
    "t": "[energetic] Chapter six: the top five mistakes. Let's check them one by one!",
    "v": "gemini:gemini-3.8-flash-tts:en-gb-tutor-6"
   },
+  "s6_0_1": {
+   "f": "s6_0_1.mp3",
+   "d": 1.52,
+   "t": "S: [determined] I'm ready for them!",
+   "v": "gemini:gemini-3.8-flash-tts:en-gb-podcaster-4"
+  },
   "s6_1_0": {
    "f": "s6_1_0.mp3",
    "d": 4.7,
