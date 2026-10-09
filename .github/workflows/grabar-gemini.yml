@@ -13,7 +13,7 @@ name: Grabar la narracion con Gemini
 on:
   workflow_dispatch:
   push:
-    branches: [claude/laughing-meitner-as9g0j]
+    branches: [main]
     paths:
       - 'tools/gemini/GRABAR.txt'
 
